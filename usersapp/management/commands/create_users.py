@@ -17,7 +17,7 @@ class Command(BaseCommand):
                         username=user.username('U_d'),
                         firstname=user.first_name(),
                         lastname=user.last_name(),
-                        email=user.email(unique=True))
+                        email=user.email(domains=['yandex.ru', 'mail.ru']))
             try:
                 user.save()
             except Exception:
