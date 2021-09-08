@@ -23,6 +23,10 @@ class ToDo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_active = models.BooleanField(verbose_name='Активна', default=True)
 
+    class Meta:
+        verbose_name = 'Заметка'
+        verbose_name_plural = 'Заметки'
+
     def __str__(self):
         return f'Заметка к проекту {self.project.name}'
 
