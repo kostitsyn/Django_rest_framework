@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 from .models import Author, Biography, Book, Article
-# from .serializers import AuthorModelSerializer
 from .serializers import AuthorSerializer, BiographySerializer, BookSerializer, ArticleSerializer
 
 
