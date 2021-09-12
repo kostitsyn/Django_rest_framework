@@ -16,16 +16,30 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from authors.views import AuthorModelViewSet, BiographyModelViewSet, BookModelViewSet, ArticleModelViewSet
+from mainapp import views
+
 
 router = DefaultRouter()
-router.register('authors', AuthorModelViewSet)
-router.register('biographies', BiographyModelViewSet)
-router.register('books', BookModelViewSet)
-router.register('articles', ArticleModelViewSet)
+router.register('article_set', views.ArticleViewSet, basename='article')
+router.register('user_set', views.UserViewSet, basename='user')
+router.register('article_mix', views.ArticleCustomViewSet, basename='article_mix'),
+router.register('django-filter', views.ArticleDjangoFilterViewSet, basename='django-filter')
+router.register('limit-offset-pagination', views.ArticleLimitOffsetPaginationViewSet, basename='limit-offset-pagination')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/', include(router.urls))
+    path('views/api-view/', views.ArticleApiView.as_view()),
+    path('views/user-api/', views.user_view),
+    path('views/user-create/', views.UserCreateView.as_view()),
+    path('views/article-create/', views.ArticleCreateView.as_view()),
+    path('views/user/<str:pk>/', views.UserRetrieveAPIView.as_view()),
+    path('views/article/<str:pk>/', views.ArticleRetrieveAPIView.as_view()),
+    path('views/articles/<str:name>/', views.ArticleFilterListAPIView.as_view()),
+    path('views/articles/', views.ArticleListAPIView.as_view()),
+    path('views/users/', views.UserListAPIView.as_view()),
+    path('views/article/delete/<str:pk>/', views.ArticleDestroyAPIView.as_view()),
+    path('views/user/delete/<str:pk>/', views.UserDestroyAPIView.as_view()),
+    path('views/article/update/<str:pk>/', views.ArticleUpdateAPIView.as_view()),
+    path('viewsets/', include(router.urls)),
 ]
