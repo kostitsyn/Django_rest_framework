@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, StringRelatedField
+from rest_framework.serializers import ModelSerializer, HyperlinkedRelatedField
 from .models import Project, ToDo
 from usersapp.serializers import UserModelSerializer
 
@@ -12,9 +12,9 @@ class ProjectSerializer(ModelSerializer):
 
 
 class ToDoSerializer(ModelSerializer):
-    project = StringRelatedField()
-    user = StringRelatedField()
+    project = HyperlinkedRelatedField(view_name='project-detail', read_only=True)
+    user = HyperlinkedRelatedField(view_name='user-detail', read_only=True)
 
     class Meta:
         model = ToDo
-        fields = ['project', 'text', 'user', 'is_active']
+        fields = ['project', 'text', 'user', 'is_active', 'uuid']
