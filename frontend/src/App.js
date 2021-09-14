@@ -8,6 +8,7 @@ import Menu from "./components/Menu/Menu";
 import Footer from "./components/Footer/Footer";
 import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
 import NotFound404 from "./components/NotFound404/NotFound404";
+import ProjectView from "./components/Projects/ProjectView/ProjectView";
 
 
 class App extends React.Component {
@@ -57,6 +58,9 @@ class App extends React.Component {
                     <Route exact path='/users' render={() => <Users users={this.state.users}/>}/>
                     <Route exact path='/projects' render={() => <ProjectsList projects={this.state.projects}/>}/>
                     <Route exact path='/notes' render={() => <NotesList notes={this.state.notes}/>}/>
+                    <Route exact path='/project/:uuid'>
+                        <ProjectView projects={this.state.projects}/>
+                    </Route>
                     <Redirect from='/' to='/users'/>
                     <Route render={NotFound404}/>
                 </Switch>
