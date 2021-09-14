@@ -12,8 +12,10 @@ class ProjectSerializer(ModelSerializer):
 
 
 class ToDoSerializer(ModelSerializer):
-    project = HyperlinkedRelatedField(view_name='project-detail', read_only=True)
-    user = HyperlinkedRelatedField(view_name='user-detail', read_only=True)
+    # project = HyperlinkedRelatedField(view_name='project-detail', read_only=True)
+    # user = HyperlinkedRelatedField(view_name='user-detail', read_only=True)
+    project = ProjectSerializer()
+    user = UserModelSerializer()
 
     class Meta:
         model = ToDo

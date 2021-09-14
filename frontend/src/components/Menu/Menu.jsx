@@ -1,10 +1,14 @@
-import c from './Menu.module.css'
+import c from './Menu.module.css';
+import MenuItem from "./MenuItem/MenuItem";
 
-const Menu = props => {
+const Menu = ({items}) => {
+    let ItemElements = items.map(item => <MenuItem item={item}/>)
     return(
-        <div className={c.menu}>
-            Menu
-        </div>
+        <nav className={c.menu}>
+            <ul>
+                {ItemElements}
+            </ul>
+        </nav>
     )
 }
 
