@@ -1,84 +1,60 @@
 import React from 'react';
 import './App.css';
-import AuthorList from "./components/Authors";
-import axios from "axios";
+import {BrowserRouter, Route, NavLink, Switch, Redirect} from "react-router-dom";
+import AuthorList from "./components/Authors/Authors";
+import Books from "./components/Books/Books";
+import NotFound404 from "./components/404Page/404Page";
+import AuthorBookList from "./components/AuthorBook/AuthorBook";
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      'authors': [],
+    constructor(props) {
+        super(props);
+        const author1 = {id: 1, name: 'Грин', birthday_year: 1880}
+        const author2 = {id: 2, name: 'Пушкин А.С.', birthday_year: 1799}
+        const author3 = {id: 3, name: 'Толстой Л.Н.', birthday_year: 1828}
+        const authors = [author1, author2, author3]
+        const book1 = {id: 1, name: 'Алые паруса', author: author1}
+        const book2 = {id: 2, name: 'Золотая цепь', author: author1}
+        const book3 = {id: 3, name: 'Пиковая дама', author: author2}
+        const book4 = {id: 4, name: 'Руслан и Людмила', author: author2}
+        const book5 = {id: 5, name: 'Война и Мир', author: author3}
+        const book6 = {id: 6, name: 'Анна Каренина', author: author3}
+        const books = [book1, book2, book3, book4, book5, book6]
+        this.state = {
+            'authors': authors,
+            'books': books
+        }
     }
-  }
-  componentDidMount() {
-    axios.get('http://127.0.0.1:8000/api/authors/')
-        .then(response => {
-          const authors = response.data
-          this.setState(
-              {
-                'authors': authors
-              }
-          )
-        }).catch(error => {
-        // console.log(error)
-        const authors = [
-          {
-              'first_name': '123',
-          'last_name': '456',
-          'birthday_year': '122'
-          }
-      ]
-      this.setState(
-              {
-                'authors': authors
-              }
-          )
-
-    })
-
-      // const authors = [
-      //     {
-      //         'first_name': '123',
-      //     'last_name': '456',
-      //     'birthday_year': '122'
-      //     }
-      // ]
-      // this.setState(
-      //         {
-      //           'authors': authors
-      //         }
-      //     )
-  }
-
-  render() {
-    return (
-        <div>
-          <AuthorList authors={this.state.authors}/>
-        </div>
-    )
-  }
+    render() {
+        return (
+            <div>
+                <BrowserRouter>
+                    <nav>
+                        <ul>
+                            <NavLink to='/'>Authors</NavLink>
+                        </ul>
+                        <ul>
+                            <NavLink to='/books'>Books</NavLink>
+                        </ul>
+                    </nav>
+                    <Switch>
+                        <Route exact path='/' render={() => <AuthorList authors={this.state.authors}/>}/>
+                        <Redirect from='/authors' to='/'/>
+                        <Route exact path='/books' render={() => <Books books={this.state.books}/>}/>
+                        <Route path='/author/:id'>
+                            <AuthorBookList books={this.state.books}/>
+                        </Route>
+                        <Route component={NotFound404}/>
+                    </Switch>
+                </BrowserRouter>
+            </div>
+        )
+    }
 }
+
+
+
+
+
 export default App;

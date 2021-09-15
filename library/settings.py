@@ -45,8 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authors',
-    'rest_framework'
+    'rest_framework',
 ]
+
+SITE_URL = "http://localhost:8000"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
