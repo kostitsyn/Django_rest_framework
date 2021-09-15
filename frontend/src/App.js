@@ -6,7 +6,7 @@ import NotesList from "./components/Notes/Notes";
 import ProjectsList from "./components/Projects/Projects";
 import Menu from "./components/Menu/Menu";
 import Footer from "./components/Footer/Footer";
-import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
+import {BrowserRouter, HashRouter, Route, Switch, Redirect} from "react-router-dom";
 import NotFound404 from "./components/NotFound404/NotFound404";
 import ProjectView from "./components/Projects/ProjectView/ProjectView";
 
@@ -21,7 +21,7 @@ class App extends React.Component {
     }
   }
   componentDidMount() {
-    axios.get('http://127.0.0.1:8000/api/users')
+    axios.get('http://127.0.0.1:8000/api/users/?page=3')
         .then(response => {
           const users = response.data.results
           this.setState(
@@ -55,13 +55,14 @@ class App extends React.Component {
             <BrowserRouter>
                 <Menu items={this.state.menuItem}/>
                 <Switch>
-                    <Route exact path='/users' render={() => <Users users={this.state.users}/>}/>
+                    <Route exact path='/' render={() => <Users users={this.state.users}/>}/>
+                    <Redirect from='/users' to='/'/>
                     <Route exact path='/projects' render={() => <ProjectsList projects={this.state.projects}/>}/>
                     <Route exact path='/notes' render={() => <NotesList notes={this.state.notes}/>}/>
-                    <Route exact path='/project/:uuid'>
+                    <Route path='/project/:id'>
                         <ProjectView projects={this.state.projects}/>
                     </Route>
-                    <Redirect from='/' to='/users'/>
+
                     <Route render={NotFound404}/>
                 </Switch>
             </BrowserRouter>
