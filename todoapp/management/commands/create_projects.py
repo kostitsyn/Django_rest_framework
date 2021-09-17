@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from todoapp.models import Project, ToDo
 from usersapp.models import User
-from uuid import uuid4
 from mimesis import Generic, Text, Internet
 from datetime import datetime
 from random import choice, sample

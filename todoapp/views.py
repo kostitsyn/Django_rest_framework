@@ -8,6 +8,7 @@ from .filters import ProjectFilter, TodoFilter
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from rest_framework.permissions import IsAdminUser
 
 
 class ProjectLimitOffsetPagination(LimitOffsetPagination):
@@ -15,6 +16,7 @@ class ProjectLimitOffsetPagination(LimitOffsetPagination):
 
 
 class ProjectModelViewSet(ModelViewSet):
+    permission_classes = [IsAdminUser]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     pagination_class = ProjectLimitOffsetPagination
@@ -55,61 +57,61 @@ class ToDoLimitOffsetPagination(LimitOffsetPagination):
 #         return Response(serializer.data)
 
 
-class NoteCreateAPIView(generics.CreateAPIView):
-    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
-    queryset = ToDo.objects.all()
-    serializer_class = ToDoSerializer
-
-
-class NoteListAPIView(generics.ListAPIView):
-    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
-    queryset = ToDo.objects.all()
-    serializer_class = ToDoSerializer
-    pagination_class = ToDoLimitOffsetPagination
-    filterset_class = TodoFilter
-
-    def get_queryset(self):
-        return ToDo.objects.filter(is_active=True)
-
-
-class NoteRetrieveAPIView(generics.RetrieveAPIView):
-    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
-    queryset = ToDo.objects.all()
-    serializer_class = ToDoSerializer
-
-
-class NoteUpdateAPIView(generics.UpdateAPIView):
-    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
-    queryset = ToDo.objects.all()
-    serializer_class = ToDoSerializer
-
-
-class NoteDestroyAPIView(generics.DestroyAPIView):
-    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
-    queryset = ToDo.objects.all()
-    serializer_class = ToDoSerializer
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.is_active = False
-        instance.save()
-        return Response()
-
-
-
-# class ToDoModelViewSet(ModelViewSet):
+# class NoteCreateAPIView(generics.CreateAPIView):
+#     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+#     queryset = ToDo.objects.all()
+#     serializer_class = ToDoSerializer
 #
+#
+# class NoteListAPIView(generics.ListAPIView):
+#     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
 #     queryset = ToDo.objects.all()
 #     serializer_class = ToDoSerializer
 #     pagination_class = ToDoLimitOffsetPagination
-#
-#     @action(detail=True, methods=['delete'])
-#     def delete_note(self, request, pk=None):
-#         note = get_object_or_404(ToDo, pk=pk)
-#         note.is_active = False
-#         note.save()
-#         serializer = ToDoSerializer(note)
-#         return Response(serializer.data)
+#     filterset_class = TodoFilter
 #
 #     def get_queryset(self):
 #         return ToDo.objects.filter(is_active=True)
+#
+#
+# class NoteRetrieveAPIView(generics.RetrieveAPIView):
+#     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+#     queryset = ToDo.objects.all()
+#     serializer_class = ToDoSerializer
+#
+#
+# class NoteUpdateAPIView(generics.UpdateAPIView):
+#     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+#     queryset = ToDo.objects.all()
+#     serializer_class = ToDoSerializer
+#
+#
+# class NoteDestroyAPIView(generics.DestroyAPIView):
+#     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+#     queryset = ToDo.objects.all()
+#     serializer_class = ToDoSerializer
+#
+#     def destroy(self, request, *args, **kwargs):
+#         instance = self.get_object()
+#         instance.is_active = False
+#         instance.save()
+#         return Response()
+
+
+
+class ToDoModelViewSet(ModelViewSet):
+
+    queryset = ToDo.objects.all()
+    serializer_class = ToDoSerializer
+    pagination_class = ToDoLimitOffsetPagination
+
+    @action(detail=True, methods=['delete'])
+    def delete_note(self, request, pk=None):
+        note = get_object_or_404(ToDo, pk=pk)
+        note.is_active = False
+        note.save()
+        serializer = ToDoSerializer(note)
+        return Response(serializer.data)
+
+    def get_queryset(self):
+        return ToDo.objects.filter(is_active=True)
