@@ -1,0 +1,17 @@
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"username": "django", "password": "21778821"}' \
+  http://localhost:8000/api/token/
+
+
+curl \
+  -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjMxODc1NjIzLCJqdGkiOiJhMjQzMGRjNDIzYzA0OTE0YTc3NzY5MTE0ZTAyYzM0YSIsInVzZXJfaWQiOjJ9.tEqx-XOQt6pBAsiJIDliUfY5BOjkrz2btnpwm3UbdLk" \
+  http://localhost:8000/api/projects/
+
+
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"refresh":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYzMTk2MTcyMywianRpIjoiMjU0MmM4MDFkYmMwNDkxNWFjMGUzNDI3YWZiOGE1YWUiLCJ1c2VyX2lkIjoyfQ.5F2Q2b4mkXK6M6NTKHMaO0Sdjjf5dYDrEzFEFx80YNA"}' \
+  http://localhost:8000/api/token/refresh/
