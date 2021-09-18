@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 from .models import Author, Biography, Book, Article
 from .serializers import AuthorSerializer, BiographySerializer, BookSerializer, ArticleSerializer
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework import permissions
 from .permissions import StaffOnly
 
 
@@ -19,6 +19,7 @@ class BiographyModelViewSet(ModelViewSet):
 
 
 class BookModelViewSet(ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
