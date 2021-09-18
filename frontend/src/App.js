@@ -15,9 +15,10 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      'users': [],
-        'projects': [],
-        'menuItem': ['Users', 'Projects', 'Notes']
+        users: [],
+        projects: [],
+        menuItem: ['Users', 'Projects', 'Notes'],
+        notes: [],
     }
   }
   componentDidMount() {

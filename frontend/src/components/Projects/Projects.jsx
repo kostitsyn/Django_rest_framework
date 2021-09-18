@@ -2,7 +2,7 @@ import ProjectItem from "./ProjectItem/ProjectItem";
 
 
 const ProjectsList = ({projects}) => {
-    let ProjectElements = projects.map(project => <ProjectItem project={project}/>)
+    let ProjectElements = projects.map(project => <ProjectItem project={project} key={project.uuid}/>)
     return (
         <table>
             <tbody>
