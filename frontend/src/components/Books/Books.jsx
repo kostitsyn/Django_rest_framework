@@ -2,7 +2,7 @@ import BookItem from "./BookItem/BookItem";
 import c from './Books.module.css';
 
 const Books = ({books}) => {
-    let booksElem = books.map(book => <BookItem item={book} key={book.id}/>)
+    let booksElem = books.map(book => <BookItem book={book} key={book.uuid}/>)
     return (
         <table border='1'>
             <tbody>

@@ -1,9 +1,11 @@
 const AuthorBookItem = ({book}) => {
+    debugger;
+    let BookAuthors = book.authors.map(author => `${author.firstName} ${author.lastName}`)
     return (
         <tr>
-            <td>{book.id}</td>
+            <td>{book.uuid}</td>
             <td>{book.name}</td>
-            <td>{book.author.name}</td>
+            <td>{BookAuthors}</td>
         </tr>
     )
 }

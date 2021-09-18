@@ -1,11 +1,12 @@
 import c from './BooksItem.module.css';
 
-const BookItem = ({item}) => {
+const BookItem = ({book}) => {
+    let BookAuthors = book.authors.map(author => `${author.firstName} ${author.lastName}`)
     return (
         <tr>
-            <td>{item.id}</td>
-            <td>{item.name}</td>
-            <td>{item.author.name}</td>
+            <td>{book.uuid}</td>
+            <td>{book.name}</td>
+            <td>{BookAuthors.join('    ')}</td>
         </tr>
     )
 }
