@@ -1,9 +1,16 @@
 import {NavLink} from "react-router-dom";
 
-const MenuItem = ({item}) => {
+const MenuItem = ({item}, {isAuthenticated}) => {
     return (
         <li>
-            <NavLink to={`/${item.toLowerCase()}`}>{item}</NavLink>
+            {
+                {if (item != 'Login') {
+                <NavLink to={`/${item.toLowerCase()}`}>{item}</NavLink>
+            }else{
+                isAuthenticated() ? <button onClick={() => logout()}>Logout</button> : <NavLink to={`/${item.toLowerCase()}`}>{item}</NavLink>
+            }
+            }}
+
         </li>
     )
 }
