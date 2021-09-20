@@ -33,8 +33,9 @@ class BookSerializer(ModelSerializer):
 
 
 class ArticleSerializer(ModelSerializer):
-    author = AuthorSerializer()
+    # author = AuthorSerializer()
 
     class Meta:
         model = Article
-        exclude = ['name']
+        # exclude = ['name']
+        fields = '__all__'

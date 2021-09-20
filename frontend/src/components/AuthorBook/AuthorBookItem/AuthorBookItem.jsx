@@ -1,5 +1,4 @@
 const AuthorBookItem = ({book}) => {
-    debugger;
     let BookAuthors = book.authors.map(author => `${author.firstName} ${author.lastName}`)
     return (
         <tr>

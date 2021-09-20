@@ -4,10 +4,11 @@ from .models import Author, Biography, Book, Article
 from .serializers import AuthorSerializer, BiographySerializer, BookSerializer, ArticleSerializer
 from rest_framework import permissions
 from .permissions import StaffOnly
+from rest_framework import permissions
 
 
 class AuthorModelViewSet(ModelViewSet):
-    # permission_classes = [AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
 
