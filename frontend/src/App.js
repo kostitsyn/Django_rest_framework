@@ -22,12 +22,29 @@ class App extends React.Component {
         menuItem: ['Users', 'Projects', 'Notes', 'Login'],
         notes: [],
         token: '',
+        username: '',
     }
+  }
+
+  setUsername(username) {
+      if (this.isAuthenticated()) {
+          this.setState({'username': username});
+      }
+  }
+
+  getHeaders() {
+      let headers = {
+          'Content-Type': 'application/json'
+      }
+      if (this.isAuthenticated()) {
+          headers['Authorization'] = `Token ${this.state.token}`;
+      }
+      return headers;
   }
 
   setToken(token) {
       const cookies = new Cookies();
-      cookies.set(token);
+      cookies.set('token', token);
       this.setState({'token': token}, () => this.loadData());
   }
 
@@ -35,7 +52,7 @@ class App extends React.Component {
       axios.post('http://127.0.0.1:8000/api-token-auth/', {username: login, password: password})
           .then(response => {
               this.setToken(response.data['token']);
-              // console.log(response.data['token']);
+              this.setUsername(login);
           }).catch(error => alert('Wrong login or password!!!'))
   }
 
@@ -46,7 +63,8 @@ class App extends React.Component {
   }
 
   loadData() {
-      axios.get('http://127.0.0.1:8000/api/users/?page=3')
+      const headers = this.getHeaders();
+      axios.get('http://127.0.0.1:8000/api/users/?page=3', {headers})
         .then(response => {
           const users = response.data.results
           this.setState(
@@ -55,7 +73,7 @@ class App extends React.Component {
               }
           )
         }).catch(error => console.log(error))
-    axios.get('http://127.0.0.1:8000/api/projects')
+    axios.get('http://127.0.0.1:8000/api/projects', {headers})
         .then(response => {
           const projects = response.data.results
           this.setState(
@@ -64,7 +82,7 @@ class App extends React.Component {
               }
           )
         }).catch(error => console.log(error))
-    axios.get('http://127.0.0.1:8000/api/notes')
+    axios.get('http://127.0.0.1:8000/api/notes', {headers})
         .then(response => {
           const notes = response.data.results
           this.setState(
@@ -77,6 +95,7 @@ class App extends React.Component {
 
   logout() {
       this.setToken('');
+      this.setState({'username': ''});
   }
 
   isAuthenticated() {
@@ -91,7 +110,8 @@ class App extends React.Component {
     return(
         <div className={c.wrapper}>
             <BrowserRouter>
-                <Menu items={this.state.menuItem} isAuthenticated={this.isAuthenticated}/>
+                <Menu items={this.state.menuItem} isAuthenticated={this.isAuthenticated.bind(this)}
+                      logout={this.logout.bind(this)} username={this.state.username}/>
                 <Switch>
                     <Route exact path='/' render={() => <Users users={this.state.users}/>}/>
                     <Redirect from='/users' to='/'/>

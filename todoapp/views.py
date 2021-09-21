@@ -8,7 +8,7 @@ from .filters import ProjectFilter, TodoFilter
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
-from rest_framework.permissions import IsAdminUser
+from rest_framework import permissions
 
 
 class ProjectLimitOffsetPagination(LimitOffsetPagination):
@@ -100,7 +100,7 @@ class ToDoLimitOffsetPagination(LimitOffsetPagination):
 
 
 class ToDoModelViewSet(ModelViewSet):
-
+    permission_classes = [permissions.IsAuthenticated]
     queryset = ToDo.objects.all()
     serializer_class = ToDoSerializer
     pagination_class = ToDoLimitOffsetPagination
