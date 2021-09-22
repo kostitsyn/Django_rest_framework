@@ -23,6 +23,13 @@ class BiographySerializer(ModelSerializer):
         fields = ['text', 'author']
 
 
+class BookSerializerBase(ModelSerializer):
+
+    class Meta:
+        model = Book
+        fields = '__all__'
+
+
 class BookSerializer(ModelSerializer):
     # authors = StringRelatedField(many=True)
     authors = AuthorSerializer(many=True)
