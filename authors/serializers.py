@@ -7,14 +7,23 @@ from .models import Author, Biography, Book, Article
 #         model = Author
 #         fields = '__all__'
 
+
+class AuthorSerializerBase(ModelSerializer):
+    class Meta:
+        model = Author
+        fields = ('first_name',)
+
+
+class AuthorSerializerFullName(ModelSerializer):
+    class Meta:
+        model = Author
+        fields = ('first_name', 'last_name')
+
+
 class AuthorSerializer(ModelSerializer):
     class Meta:
         model = Author
         fields = '__all__'
-        # fields = [
-        #     'uuid',
-        #     'first_name',
-        # ]
 
 
 class BiographySerializer(ModelSerializer):
