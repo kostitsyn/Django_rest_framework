@@ -11,6 +11,7 @@ from uuid import uuid4
 
 # class Author(BaseModel):
 class Author(models.Model):
+    """fsdfsdfhgdf"""
     uuid = models.UUIDField(primary_key=True, default=uuid4)
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)

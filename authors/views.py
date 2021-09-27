@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework import mixins
 from .models import Author, Biography, Book, Article
 from .serializers import AuthorSerializer, BiographySerializer, \
     BookSerializer, ArticleSerializer, BookSerializerBase, \
@@ -9,12 +10,16 @@ from .permissions import StaffOnly
 from rest_framework import permissions
 
 
-class AuthorModelViewSet(ModelViewSet):
+class AuthorModelViewSet(
+                         mixins.ListModelMixin,
+                         GenericViewSet):
+    """Viewset for Authors"""
     # permission_classes = [permissions.IsAuthenticated]
     queryset = Author.objects.all()
 
     def get_serializer_class(self):
-        print(self.request.version)
+        """Choice serializer class depending of the version."""
+        # print(self.request.version)
         if self.request.version == '0.1':
             return AuthorSerializerBase
         elif self.request.version == '0.2':
