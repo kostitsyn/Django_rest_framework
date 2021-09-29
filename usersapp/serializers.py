@@ -18,3 +18,13 @@ class UserModelSerializer(ModelSerializer):
             'email',
             'uuid',
         ]
+
+
+class UserModelSerializerRole(ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'is_superuser',
+            'is_staff',
+        ]
