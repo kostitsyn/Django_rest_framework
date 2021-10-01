@@ -57,6 +57,13 @@ class App extends React.Component {
             }).catch(error => alert('Wrong login or password!'))
     }
 
+    deleteBook(uuid) {
+        const headers = this.getHeaders();
+        axios.delete(`http://127.0.0.1:8001/api/books/${uuid}`, {headers})
+            .then(response => {this.setState({books: this.state.books.filter(book => book.uuid !== uuid)})})
+            .catch(error => console.log(error))
+    }
+
     loadData() {
         const headers = this.getHeaders();
         axios.get('http://127.0.0.1:8001/api/authors', {headers})
@@ -104,7 +111,7 @@ class App extends React.Component {
                     <Switch>
                         <Route exact path='/' render={() => <AuthorList authors={this.state.authors}/>}/>
                         <Redirect from='/authors' to='/'/>
-                        <Route exact path='/books' render={() => <Books books={this.state.books}/>}/>
+                        <Route exact path='/books' render={() => <Books books={this.state.books} deleteBook={uuid => this.deleteBook(uuid)}/>}/>
                         <Route path='/author/:uuid'>
                             <AuthorBookList books={this.state.books}/>
                         </Route>
