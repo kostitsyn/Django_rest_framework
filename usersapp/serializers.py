@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer, HyperlinkedModelSerializ
 from .models import User
 
 
-class UserModelSerializerWithStatus(ModelSerializer):
+class UserModelSerializerBase(ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
@@ -17,4 +17,14 @@ class UserModelSerializer(ModelSerializer):
             'lastname',
             'email',
             'uuid',
+        ]
+
+
+class UserModelSerializerRole(ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'is_superuser',
+            'is_staff',
         ]

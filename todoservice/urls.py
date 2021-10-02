@@ -23,15 +23,15 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
-from graphene_django.views import GraphQLView
+
 
 schema_view = get_schema_view(
     openapi.Info(
-        title='ToDo Service',
+        title='ToDo Project',
         default_version='0.1',
-        description='Documentation to out project',
-        contact=openapi.Contact(url='geekshop.xyz'),
-        license=openapi.License(name='GNU license')
+        description='Documentation to my project',
+        contact=openapi.Contact(url='https://www.geek-shop.xyz'),
+        license=openapi.License(name='GNU License'),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,)
@@ -47,6 +47,9 @@ router.register('users', UserModelViewSet, basename='users')
 # router_1.register('users', UserModelViewSet)
 
 
+router_1 = DefaultRouter()
+router_1.register('users', UserModelViewSet)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
@@ -60,13 +63,14 @@ urlpatterns = [
     # path('api/notes/create/', NoteCreateAPIView.as_view()),
     # path('api/notes/update/<str:pk>/', NoteUpdateAPIView.as_view()),
     # path('api/notes/destroy/<str:pk>/', NoteDestroyAPIView.as_view()),
-    path('api/users/0.1', include('usersapp.urls', namespace='0.1')),
-    path('api/users/0.2', include('usersapp.urls', namespace='0.2')),
+    # path('api/users/0.1', include('usersapp.urls', namespace='0.1')),
+    # path('api/users/0.2', include('usersapp.urls', namespace='0.2')),
+    # path('api/users/0.3', include('usersapp.urls', namespace='0.3')),
 
-    path('swagger<format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-swagger-ui'),
-    path('graphql/', GraphQLView.as_view(graphiql=True))
+    path('redoc-old/', schema_view.with_ui('redoc-old', cache_timeout=0), name='schema-redoc'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
 
 
