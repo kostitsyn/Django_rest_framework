@@ -9,7 +9,7 @@ class BookForm extends React.Component {
             // authors: props.authors.slice(0, 1).uuid
             authors: props.authors
         }
-        this.authorsElements = this.props.authors.map(item => <option value={item.uuid}>{item.firstName} {item.lastName}</option>)
+        this.authorsElements = this.props.authors.map(item => <option value={item.uuid} key={item.uuid}>{item.firstName} {item.lastName}</option>)
     }
 
     handleChange(event) {
