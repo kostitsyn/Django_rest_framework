@@ -38,7 +38,7 @@ class App extends React.Component {
       let headers = {
           'Content-Type': 'application/json',
           // 'Access-Control-Allow-Origin': 'http://localhost:3000'
-          'Access-Control-Allow-Origin': 'http://127.0.0.1:8000'
+          // 'Access-Control-Allow-Origin': 'http://127.0.0.1:8000'
       }
       if (this.isAuthenticated()) {
           headers['Authorization'] = `Token ${this.state.token}`;
