@@ -53,7 +53,7 @@ class App extends React.Component {
     }
 
     getToken(username, password) {
-        axios.post(`${this.url}/api-token-auth/`, {username: username, password: password})
+        axios.post(`${this.url}/api-token-auth`, {username: username, password: password})
             .then(response => {
                 this.setToken(response.data['token']);
             }).catch(error => alert('Wrong login or password!'))
@@ -69,7 +69,7 @@ class App extends React.Component {
     createBook(name, authors) {
         const headers = this.getHeaders();
         const data = {name: name, authors: authors}
-        axios.post(`${this.url}/api/books/`, data, {headers: headers})
+        axios.post(`${this.url}/api/books`, data, {headers: headers})
             .then(response => {
                 let newBook = response.data;
                 const authors = this.state.authors.filter(author => authors.find(newAuthor => newAuthor === author.uuid));
