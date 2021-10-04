@@ -14,6 +14,7 @@ import Cookies from "universal-cookie/lib";
 class App extends React.Component {
     constructor(props) {
         super(props);
+        this.url = 'http://127.0.0.1:8001';
         this.state = {
             authors: [],
             books: [],
@@ -52,7 +53,7 @@ class App extends React.Component {
     }
 
     getToken(username, password) {
-        axios.post('http://127.0.0.1:8001/api-token-auth/', {username: username, password: password})
+        axios.post(`${this.url}/api-token-auth/`, {username: username, password: password})
             .then(response => {
                 this.setToken(response.data['token']);
             }).catch(error => alert('Wrong login or password!'))
@@ -60,7 +61,7 @@ class App extends React.Component {
 
     deleteBook(uuid) {
         const headers = this.getHeaders();
-        axios.delete(`http://127.0.0.1:8001/api/books/${uuid}`, {headers})
+        axios.delete(`${this.url}/api/books/${uuid}`, {headers: headers})
             .then(response => {this.setState({books: this.state.books.filter(book => book.uuid !== uuid)})})
             .catch(error => console.log(error))
     }
@@ -68,7 +69,7 @@ class App extends React.Component {
     createBook(name, authors) {
         const headers = this.getHeaders();
         const data = {name: name, authors: authors}
-        axios.post('http://127.0.0.1:8001/api/books/', data, {headers})
+        axios.post(`${this.url}/api/books/`, data, {headers: headers})
             .then(response => {
                 let newBook = response.data;
                 const authors = this.state.authors.filter(author => authors.find(newAuthor => newAuthor === author.uuid));
@@ -79,7 +80,7 @@ class App extends React.Component {
 
     loadData() {
         const headers = this.getHeaders();
-        axios.get('http://127.0.0.1:8001/api/authors', {headers})
+        axios.get(`${this.url}/api/authors`, {headers: headers})
             .then(response => {
                 this.setState(
                     {
@@ -87,7 +88,7 @@ class App extends React.Component {
                     }
                 )
             }).catch(error => console.log(error))
-        axios.get('http://127.0.0.1:8001/api/books', {headers})
+        axios.get(`${this.url}/api/books`, {headers: headers})
             .then(response => {
                 this.setState(
                     {
