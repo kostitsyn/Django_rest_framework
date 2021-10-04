@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet, GenericViewSet, ViewSet
 from rest_framework import mixins
 from .models import Author, Biography, Book, Article
 from .serializers import AuthorSerializer, BiographySerializer, \
@@ -8,6 +10,7 @@ from .serializers import AuthorSerializer, BiographySerializer, \
 from rest_framework import permissions
 from .permissions import StaffOnly
 from rest_framework import permissions
+from rest_framework import status
 
 
 class AuthorModelViewSet(
@@ -33,14 +36,42 @@ class BiographyModelViewSet(ModelViewSet):
     serializer_class = BiographySerializer
 
 
-class BookModelViewSet(ModelViewSet):
-    # permission_classes = [permissions.IsAuthenticated]
-    queryset = Book.objects.all()
+# class BookModelViewSet(ModelViewSet):
+#     # permission_classes = [permissions.IsAuthenticated]
+#     queryset = Book.objects.all()
+#
+#     def get_serializer_class(self):
+#         if self.request.method in ['GET']:
+#             return BookSerializer
+#         return BookSerializerBase
 
-    def get_serializer_class(self):
-        if self.request.method in ['GET']:
-            return BookSerializer
-        return BookSerializerBase
+class BookModelViewSet(ViewSet):
+    permission_classes = [permissions.AllowAny]
+    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+
+    def list(self, request):
+        books = Book.objects.all()
+        serializer = BookSerializer(books, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        book = Book.objects.get(pk=pk)
+        serializer = BookSerializer(book)
+        return Response(serializer.data)
+
+    def create(self, request, format=None):
+        new_book = Book.objects.create(name=request.data['name'])
+        for author_uuid in request.data['authors']:
+            author = Author.objects.get(pk=author_uuid)
+            new_book.authors.add(author)
+            new_book.save()
+
+        return Response(status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, pk=None):
+        book = Book.objects.get(pk=pk)
+        book.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ArticleModelViewSet(ModelViewSet):

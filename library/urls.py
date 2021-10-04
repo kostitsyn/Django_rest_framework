@@ -39,7 +39,7 @@ schema_view = get_schema_view(
 router = DefaultRouter()
 router.register('authors', AuthorModelViewSet)
 router.register('biographies', BiographyModelViewSet)
-router.register('books', BookModelViewSet)
+router.register('books', BookModelViewSet, basename='books')
 router.register('articles', ArticleModelViewSet)
 
 urlpatterns = [

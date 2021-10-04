@@ -5,6 +5,7 @@ import AuthorList from "./components/Authors/Authors";
 import Books from "./components/Books/Books";
 import NotFound404 from "./components/404Page/404Page";
 import AuthorBookList from "./components/AuthorBook/AuthorBook";
+import BookForm from "./components/Books/BookForm/BookForm";
 import axios from "axios";
 import LoginForm from "./components/Authorization/Auth";
 import Cookies from "universal-cookie/lib";
@@ -64,6 +65,18 @@ class App extends React.Component {
             .catch(error => console.log(error))
     }
 
+    createBook(name, authors) {
+        const headers = this.getHeaders();
+        const data = {name: name, authors: authors}
+        axios.post('http://127.0.0.1:8001/api/books/', data, {headers})
+            .then(response => {
+                let newBook = response.data;
+                const authors = this.state.authors.filter(author => authors.find(newAuthor => newAuthor === author.uuid));
+                newBook.authors = authors;
+            })
+            .catch(error => console.log(error));
+    }
+
     loadData() {
         const headers = this.getHeaders();
         axios.get('http://127.0.0.1:8001/api/authors', {headers})
@@ -112,10 +125,12 @@ class App extends React.Component {
                         <Route exact path='/' render={() => <AuthorList authors={this.state.authors}/>}/>
                         <Redirect from='/authors' to='/'/>
                         <Route exact path='/books' render={() => <Books books={this.state.books} deleteBook={uuid => this.deleteBook(uuid)}/>}/>
+                        <Route exact path='/book/create' component={() => <BookForm authors={this.state.authors} createBook={(name, authors) => this.createBook(name, authors)}/>}/>
                         <Route path='/author/:uuid'>
                             <AuthorBookList books={this.state.books}/>
                         </Route>
                         <Route exact path='/login' render={() => <LoginForm getToken={(username, password) => this.getToken(username, password)}/>}/>
+
                         <Route component={NotFound404}/>
                     </Switch>
                 </BrowserRouter>
