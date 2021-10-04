@@ -40,12 +40,12 @@ schema_view = get_schema_view(
 
 router = DefaultRouter()
 
-router.register('projects', ProjectModelViewSet)
+router.register('projects', ProjectModelViewSet, basename='projects')
 router.register('notes', ToDoModelViewSet, basename='notes')
 router.register('users', UserModelViewSet, basename='users')
 
-# router_1 = DefaultRouter()
-# router_1.register('users', UserModelViewSet)
+router_1 = DefaultRouter()
+router_1.register('users', UserModelViewSet)
 
 
 router_1 = DefaultRouter()
@@ -55,7 +55,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include(router.urls)),
-    # path('api/<version>/', include(router_1.urls)),
+    path('api/<version>/', include(router_1.urls)),
     path('api-token-auth/', views.obtain_auth_token),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

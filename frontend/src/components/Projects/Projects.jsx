@@ -1,19 +1,24 @@
 import ProjectItem from "./ProjectItem/ProjectItem";
+import {Link} from "react-router-dom";
 
 
-const ProjectsList = ({projects}) => {
-    let ProjectElements = projects.map(project => <ProjectItem project={project} key={project.uuid}/>)
+const ProjectsList = ({projects, deleteProject}) => {
+    let ProjectElements = projects.map(project => <ProjectItem deleteProject={deleteProject} project={project} key={project.uuid}/>)
     return (
-        <table>
-            <tbody>
-                <tr>
-                    <th>Name</th>
-                    <th>Repository</th>
-                    <th>Participants</th>
-                </tr>
-                {ProjectElements}
-            </tbody>
-        </table>
+        <div>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <th>Repository</th>
+                        <th>Participants</th>
+                        <th/>
+                    </tr>
+                    {ProjectElements}
+                </tbody>
+            </table>
+            <Link to='/projects/create'>Create</Link>
+        </div>
     )
 }
 

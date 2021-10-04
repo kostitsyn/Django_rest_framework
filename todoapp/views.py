@@ -15,16 +15,37 @@ class ProjectLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 10
 
 
-class ProjectModelViewSet(ModelViewSet):
-    # permission_classes = [IsAdminUser]
-    queryset = Project.objects.all()
-    pagination_class = ProjectLimitOffsetPagination
-    filterset_class = ProjectFilter
+# class ProjectModelViewSet(ModelViewSet):
+#     # permission_classes = [IsAdminUser]
+#     queryset = Project.objects.all()
+#     pagination_class = ProjectLimitOffsetPagination
+#     filterset_class = ProjectFilter
+#
+#     def get_serializer_class(self):
+#         if self.request.method in ['GET']:
+#             return ProjectSerializer
+#         return ProjectSerializerBase
+#
+#     def create(self, request, *args, **kwargs):
+#         print()
 
-    def get_serializer_class(self):
-        if self.request.method in ['GET']:
-            return ProjectSerializer
-        return ProjectSerializerBase
+
+class ProjectModelViewSet(ViewSet):
+    # permission_classes = [IsAdminUser]
+    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+
+    def list(self, request):
+        projects = Project.objects.all()
+        serializer = ProjectSerializer(projects, many=True)
+        return Response(serializer.data)
+
+    # def get_serializer_class(self):
+    #     if self.request.method in ['GET']:
+    #         return ProjectSerializer
+    #     return ProjectSerializerBase
+
+    def create(self, request, *args, **kwargs):
+        print()
 
 
 class ToDoLimitOffsetPagination(LimitOffsetPagination):
