@@ -17,7 +17,7 @@ import ProjectForm from "./components/Projects/ProjectForm/ProjectForm";
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.url = 'http://127.0.0.1:8000';
+    this.url = 'http://127.0.0.1:8002';
     this.state = {
         users: [],
         projects: [],
@@ -78,16 +78,16 @@ class App extends React.Component {
               }
           )
         }).catch(error => console.log(error))
-    axios.get(`${this.url}/api/projects`, {headers})
+    axios.get(`${this.url}/api/projects/`, {headers})
         .then(response => {
-          const projects = response.data.results
+          const projects = response.data
           this.setState(
               {
                 projects: projects,
               }
           )
         }).catch(error => console.log(error))
-    axios.get(`${this.url}/api/notes`, {headers})
+    axios.get(`${this.url}/api/notes/`, {headers})
         .then(response => {
           const notes = response.data.results
           this.setState(
@@ -109,7 +109,7 @@ class App extends React.Component {
 
   deleteProject(uuid) {
       const headers = this.getHeaders();
-      axios.delete(`${this.url}/api/projects/${uuid}`, {headers: headers})
+      axios.delete(`${this.url}/api/projects/${uuid}/`, {headers: headers})
           .then(response => {
               const projects = this.state.projects.filter(project => project.uuid !== uuid);
               this.setState({projects: projects})
@@ -119,7 +119,7 @@ class App extends React.Component {
   createProject(name, repoLink, users) {
       const headers = this.getHeaders();
       const data = {name: name, repoLink: repoLink, users: users};
-      axios.post(`${this.url}/api/projects`, data, {headers: headers})
+      axios.post(`${this.url}/api/projects/`, data, {headers: headers})
           .then(response => {
               let newProject = response.data;
               let users = this.state.projects
@@ -132,24 +132,26 @@ class App extends React.Component {
 
   render() {
     return(
-        <div className={c.wrapper}>
-            <BrowserRouter>
-                <Menu items={this.state.menuItem} isAuthenticated={this.isAuthenticated.bind(this)}
-                      logout={this.logout.bind(this)} username={this.state.username}/>
-                <Switch>
-                    <Route exact path='/' render={() => <Users users={this.state.users}/>}/>
-                    <Redirect from='/users' to='/'/>
-                    <Route exact path='/projects' render={() => <ProjectsList deleteProject={uuid => this.deleteProject(uuid)} projects={this.state.projects}/>}/>
-                    <Route exact path='/notes' render={() => <NotesList notes={this.state.notes}/>}/>
-                    <Route path='/project/:id'>
-                        <ProjectView projects={this.state.projects}/>
-                    </Route>
-                    <Route exact path='/login' render={() => <Auth getToken={(username, password) => this.getToken(username, password)}/>}/>
-                    <Route exact path='/projects/create' render={() =>
-                        <ProjectForm createProject={(name, repoLink, users) => this.createProject(name, repoLink, users)}/>}/>
-                    <Route render={NotFound404}/>
-                </Switch>
-            </BrowserRouter>
+        <div className='wrapper'>
+            <div className='content'>
+                <BrowserRouter>
+                    <Menu items={this.state.menuItem} isAuthenticated={this.isAuthenticated.bind(this)}
+                          logout={this.logout.bind(this)} username={this.state.username}/>
+                    <Switch>
+                        <Route exact path='/' render={() => <Users users={this.state.users}/>}/>
+                        <Redirect from='/users' to='/'/>
+                        <Route exact path='/projects' render={() => <ProjectsList deleteProject={uuid => this.deleteProject(uuid)} projects={this.state.projects}/>}/>
+                        <Route exact path='/notes' render={() => <NotesList notes={this.state.notes}/>}/>
+                        <Route path='/project/:id'>
+                            <ProjectView projects={this.state.projects}/>
+                        </Route>
+                        <Route exact path='/login' render={() => <Auth getToken={(username, password) => this.getToken(username, password)}/>}/>
+                        <Route exact path='/projects/create' render={() =>
+                            <ProjectForm createProject={(name, repoLink, users) => this.createProject(name, repoLink, users)}/>}/>
+                        <Route render={NotFound404}/>
+                    </Switch>
+                </BrowserRouter>
+            </div>
             <Footer/>
         </div>
     )

@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from .models import Project, ToDo
 from .serializers import ProjectSerializer, ProjectSerializerBase, ToDoSerializer, ToDoSerializerBase
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from .filters import ProjectFilter, TodoFilter
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -13,6 +13,7 @@ from rest_framework import permissions
 
 class ProjectLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 10
+
 
 
 # class ProjectModelViewSet(ModelViewSet):
@@ -29,6 +30,8 @@ class ProjectLimitOffsetPagination(LimitOffsetPagination):
 #     def create(self, request, *args, **kwargs):
 #         print()
 
+class ExamplePagination(PageNumberPagination):
+    page_size = 2
 
 class ProjectModelViewSet(ViewSet):
     # permission_classes = [IsAdminUser]
