@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import generics
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from .models import Project, ToDo
+from usersapp.models import User
 from .serializers import ProjectSerializer, ProjectSerializerBase, ToDoSerializer, ToDoSerializerBase
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from .filters import ProjectFilter, TodoFilter
@@ -9,46 +10,54 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework import permissions
+from rest_framework import status
 
 
 class ProjectLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 10
 
 
-
-# class ProjectModelViewSet(ModelViewSet):
-#     # permission_classes = [IsAdminUser]
-#     queryset = Project.objects.all()
-#     pagination_class = ProjectLimitOffsetPagination
-#     filterset_class = ProjectFilter
-#
-#     def get_serializer_class(self):
-#         if self.request.method in ['GET']:
-#             return ProjectSerializer
-#         return ProjectSerializerBase
-#
-#     def create(self, request, *args, **kwargs):
-#         print()
-
-class ExamplePagination(PageNumberPagination):
-    page_size = 2
-
-class ProjectModelViewSet(ViewSet):
+class ProjectModelViewSet(ModelViewSet):
     # permission_classes = [IsAdminUser]
-    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+    queryset = Project.objects.all()
+    pagination_class = ProjectLimitOffsetPagination
+    filterset_class = ProjectFilter
 
-    def list(self, request):
-        projects = Project.objects.all()
-        serializer = ProjectSerializer(projects, many=True)
-        return Response(serializer.data)
+    def get_serializer_class(self):
+        if self.request.method in ['GET']:
+            return ProjectSerializer
+        return ProjectSerializerBase
+
+    def create(self, request, *args, **kwargs):
+        new_project = Project.objects.create(name=request.data['name'], repo_link=request.data['repo_link'])
+        for user_uuid in request.data['users']:
+            try:
+                current_user = User.objects.get(uuid=user_uuid)
+            except User.DoesNotExist:
+                current_user = None
+            new_project.users.add(current_user)
+            new_project.save()
+        return Response(status=status.HTTP_201_CREATED)
+
+# class ExamplePagination(PageNumberPagination):
+#     page_size = 2
+#
+# class ProjectModelViewSet(ViewSet):
+#     # permission_classes = [IsAdminUser]
+#     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+#
+#     def list(self, request):
+#         projects = Project.objects.all()
+#         serializer = ProjectSerializer(projects, many=True)
+#         return Response(serializer.data)
 
     # def get_serializer_class(self):
     #     if self.request.method in ['GET']:
     #         return ProjectSerializer
     #     return ProjectSerializerBase
 
-    def create(self, request, *args, **kwargs):
-        print()
+    # def create(self, request, *args, **kwargs):
+    #     print()
 
 
 class ToDoLimitOffsetPagination(LimitOffsetPagination):

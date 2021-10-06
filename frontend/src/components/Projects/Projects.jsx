@@ -2,8 +2,22 @@ import ProjectItem from "./ProjectItem/ProjectItem";
 import {Link} from "react-router-dom";
 
 
-const ProjectsList = ({projects, deleteProject}) => {
+const ProjectsList = ({projects, deleteProject, changePage}) => {
     let ProjectElements = projects.map(project => <ProjectItem deleteProject={deleteProject} project={project} key={project.uuid}/>)
+    let currentPage = 1;
+
+    let nextPage = () => {
+        currentPage++;
+        changePage(currentPage);
+    }
+
+    let previousPage = () => {
+        if (currentPage > 1) {
+            currentPage--;
+        }
+        changePage(currentPage);
+    }
+
     return (
         <div>
             <table>
@@ -17,6 +31,8 @@ const ProjectsList = ({projects, deleteProject}) => {
                     {ProjectElements}
                 </tbody>
             </table>
+            <button onClick={() => previousPage()}>Previous page</button>
+            <button onClick={() => nextPage()}>Next page</button>
             <Link to='/projects/create'>Create</Link>
         </div>
     )

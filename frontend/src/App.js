@@ -67,6 +67,19 @@ class App extends React.Component {
       this.setState({'token': token}, () => this.loadData());
   }
 
+  changePage(number) {
+      const headers = this.getHeaders();
+      axios.get(`${this.url}/api/projects/?page=${number}`, {headers})
+        .then(response => {
+          const projects = response.data.results
+          this.setState(
+              {
+                projects: projects,
+              }
+          )
+        }).catch(error => console.log(error))
+  }
+
   loadData() {
       const headers = this.getHeaders();
       axios.get(`${this.url}/api/0.2/users/?page=1`, {headers})
@@ -80,7 +93,7 @@ class App extends React.Component {
         }).catch(error => console.log(error))
     axios.get(`${this.url}/api/projects/`, {headers})
         .then(response => {
-          const projects = response.data
+          const projects = response.data.results
           this.setState(
               {
                 projects: projects,
@@ -140,14 +153,17 @@ class App extends React.Component {
                     <Switch>
                         <Route exact path='/' render={() => <Users users={this.state.users}/>}/>
                         <Redirect from='/users' to='/'/>
-                        <Route exact path='/projects' render={() => <ProjectsList deleteProject={uuid => this.deleteProject(uuid)} projects={this.state.projects}/>}/>
+                        <Route exact path='/projects' render={() => <ProjectsList
+                            deleteProject={uuid => this.deleteProject(uuid)}
+                            projects={this.state.projects}
+                            changePage={number => {this.changePage(number)}}/>}/>
                         <Route exact path='/notes' render={() => <NotesList notes={this.state.notes}/>}/>
                         <Route path='/project/:id'>
                             <ProjectView projects={this.state.projects}/>
                         </Route>
                         <Route exact path='/login' render={() => <Auth getToken={(username, password) => this.getToken(username, password)}/>}/>
                         <Route exact path='/projects/create' render={() =>
-                            <ProjectForm createProject={(name, repoLink, users) => this.createProject(name, repoLink, users)}/>}/>
+                            <ProjectForm allUsers={this.state.users} createProject={(name, repoLink, users) => this.createProject(name, repoLink, users)}/>}/>
                         <Route render={NotFound404}/>
                     </Switch>
                 </BrowserRouter>
