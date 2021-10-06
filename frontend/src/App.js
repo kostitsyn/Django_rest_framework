@@ -25,6 +25,15 @@ class App extends React.Component {
         notes: [],
         token: '',
         username: '',
+
+        projectPage: 1,
+        isLastProjectPage: false,
+
+        notesPage: 1,
+        isLastNotesPage: false,
+
+        usersPage: 1,
+        isLastUsersPage: false,
     }
   }
 
@@ -67,14 +76,35 @@ class App extends React.Component {
       this.setState({'token': token}, () => this.loadData());
   }
 
-  changePage(number) {
+  changePage(entity, action) {
       const headers = this.getHeaders();
-      axios.get(`${this.url}/api/projects/?page=${number}`, {headers})
+      let currentPage = this.state.projectPage;
+      let currentPageLabel = 'projectPage'
+
+      let isLastPage = this.state.isLastProjectPage
+      let isLastPageLabel = 'isLastProjectPage'
+      if (entity === 'projects') {
+          currentPage = this.state.projectPage;
+          currentPageLabel = 'projectPage'
+
+          isLastPage = this.state.isLastProjectPage
+          isLastPageLabel = 'isLastProjectPage'
+      } else {}
+      if (action === 'next' && !isLastPage) {
+          ++currentPage;
+      } else if (action === 'previous' && currentPage > 1) {
+          --currentPage;
+      } else {
+          return
+      }
+      axios.get(`${this.url}/api/${entity}/?page=${currentPage}`, {headers})
         .then(response => {
-          const projects = response.data.results
+          const objects = response.data.results
           this.setState(
               {
-                projects: projects,
+                [entity]: objects,
+                [currentPageLabel]: currentPage,
+                [isLastPageLabel]: response.data.next ? false : true
               }
           )
         }).catch(error => console.log(error))
@@ -151,12 +181,13 @@ class App extends React.Component {
                     <Menu items={this.state.menuItem} isAuthenticated={this.isAuthenticated.bind(this)}
                           logout={this.logout.bind(this)} username={this.state.username}/>
                     <Switch>
-                        <Route exact path='/' render={() => <Users users={this.state.users}/>}/>
+                        <Route exact path='/' render={() => <Users users={this.state.users} changePage={(entity, action) => {this.changePage(entity, action)}}/>}/>
                         <Redirect from='/users' to='/'/>
                         <Route exact path='/projects' render={() => <ProjectsList
                             deleteProject={uuid => this.deleteProject(uuid)}
                             projects={this.state.projects}
-                            changePage={number => {this.changePage(number)}}/>}/>
+                            changePage={(entity, action) => {this.changePage(entity, action)}}
+                            currentPage={this.state.projectPage}/>}/>
                         <Route exact path='/notes' render={() => <NotesList notes={this.state.notes}/>}/>
                         <Route path='/project/:id'>
                             <ProjectView projects={this.state.projects}/>
