@@ -26,14 +26,17 @@ class App extends React.Component {
         token: '',
         username: '',
 
+        usersPage: 1,
+        isLastUsersPage: false,
+        isFirstUsersPage: false,
+
         projectPage: 1,
         isLastProjectPage: false,
+        isFirstProjectPage: false,
 
         notesPage: 1,
         isLastNotesPage: false,
-
-        usersPage: 1,
-        isLastUsersPage: false,
+        isFirstNotesPage: false,
     }
   }
 
@@ -78,21 +81,49 @@ class App extends React.Component {
 
   changePage(entity, action) {
       const headers = this.getHeaders();
-      let currentPage = this.state.projectPage;
-      let currentPageLabel = 'projectPage'
+      let currentPage;
+      let currentPageLabel;
 
-      let isLastPage = this.state.isLastProjectPage
-      let isLastPageLabel = 'isLastProjectPage'
+      let isLastPage;
+      let isLastPageLabel;
+
+      let isFirstPage;
+      let isFirstPageLabel;
+
       if (entity === 'projects') {
           currentPage = this.state.projectPage;
           currentPageLabel = 'projectPage'
 
           isLastPage = this.state.isLastProjectPage
           isLastPageLabel = 'isLastProjectPage'
-      } else {}
+
+          isFirstPage = this.state.isFirstProjectPage
+          isFirstPageLabel = 'isFirstProjectPage'
+
+      } else if (entity === 'users') {
+          currentPage = this.state.usersPage;
+          currentPageLabel = 'usersPage'
+
+          isLastPage = this.state.isLastUsersPage
+          isLastPageLabel = 'isLastUsersPage'
+
+          isFirstPage = this.state.isFirstUsersPage
+          isFirstPageLabel = 'isFirstUsersPage'
+
+      } else if (entity === 'notes') {
+          currentPage = this.state.notesPage;
+          currentPageLabel = 'notesPage'
+
+          isLastPage = this.state.isLastNotesPage
+          isLastPageLabel = 'isLastNotesPage'
+
+          isFirstPage = this.state.isFirstNotesPage
+          isFirstPageLabel = 'isFirstNotesPage'
+      }
+
       if (action === 'next' && !isLastPage) {
           ++currentPage;
-      } else if (action === 'previous' && currentPage > 1) {
+      } else if (action === 'previous' && !isFirstPage) {
           --currentPage;
       } else {
           return
@@ -104,7 +135,8 @@ class App extends React.Component {
               {
                 [entity]: objects,
                 [currentPageLabel]: currentPage,
-                [isLastPageLabel]: response.data.next ? false : true
+                [isLastPageLabel]: !response.data.next,
+                [isFirstPageLabel]: !response.data.previous,
               }
           )
         }).catch(error => console.log(error))
@@ -150,12 +182,12 @@ class App extends React.Component {
       return this.state.token != '';
   }
 
-  deleteProject(uuid) {
+  deleteObject(entity, uuid) {
       const headers = this.getHeaders();
-      axios.delete(`${this.url}/api/projects/${uuid}/`, {headers: headers})
+      axios.delete(`${this.url}/api/${entity}/${uuid}/`, {headers: headers})
           .then(response => {
-              const projects = this.state.projects.filter(project => project.uuid !== uuid);
-              this.setState({projects: projects})
+              const objects = this.state.projects.filter(object => object.uuid !== uuid);
+              this.setState({[entity]: objects})
           }).catch(error => console.log(error))
   }
 
@@ -181,20 +213,34 @@ class App extends React.Component {
                     <Menu items={this.state.menuItem} isAuthenticated={this.isAuthenticated.bind(this)}
                           logout={this.logout.bind(this)} username={this.state.username}/>
                     <Switch>
-                        <Route exact path='/' render={() => <Users users={this.state.users} changePage={(entity, action) => {this.changePage(entity, action)}}/>}/>
+                        <Route exact path='/' render={() => <Users
+                            users={this.state.users}
+                            changePage={(entity, action) => {this.changePage(entity, action)}}
+                            currentPage={this.state.usersPage}
+                            isLastUsersPage={this.state.isLastUsersPage}
+                            isFirstUsersPage={this.state.isFirstUsersPage}/>}/>
                         <Redirect from='/users' to='/'/>
                         <Route exact path='/projects' render={() => <ProjectsList
-                            deleteProject={uuid => this.deleteProject(uuid)}
+                            deleteProject={(entity, uuid) => this.deleteObject(entity, uuid)}
                             projects={this.state.projects}
                             changePage={(entity, action) => {this.changePage(entity, action)}}
-                            currentPage={this.state.projectPage}/>}/>
-                        <Route exact path='/notes' render={() => <NotesList notes={this.state.notes}/>}/>
+                            currentPage={this.state.projectPage}
+                            isLastProjectPage={this.state.isLastProjectPage}
+                            isFirstProjectPage={this.state.isFirstProjectPage}/>}/>
+                        <Route exact path='/notes' render={() => <NotesList
+                            deleteNote={(entity, uuid) => {this.deleteObject(entity, uuid)}}
+                            notes={this.state.notes}
+                            changePage={(entity, action) => {this.changePage(entity, action)}}
+                            currentPage={this.state.notesPage}
+                            isLastNotesPage={this.state.isLastNotesPage}
+                            isFirstNotesPage={this.state.isFirstNotesPage}/>}/>
                         <Route path='/project/:id'>
                             <ProjectView projects={this.state.projects}/>
                         </Route>
                         <Route exact path='/login' render={() => <Auth getToken={(username, password) => this.getToken(username, password)}/>}/>
                         <Route exact path='/projects/create' render={() =>
                             <ProjectForm allUsers={this.state.users} createProject={(name, repoLink, users) => this.createProject(name, repoLink, users)}/>}/>
+                        {/*<Route exact path='/notes/create' render*/}
                         <Route render={NotFound404}/>
                     </Switch>
                 </BrowserRouter>

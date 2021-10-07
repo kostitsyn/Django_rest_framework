@@ -14,8 +14,8 @@ class UserModelViewSet(mixins.ListModelMixin,
 
     def get_serializer_class(self):
         if self.request.version == '0.1':
-            return UserModelSerializerBase
+            return UserModelSerializerRole
         elif self.request.version == '0.2':
             return UserModelSerializer
         else:
-            return UserModelSerializerRole
+            return UserModelSerializerBase
