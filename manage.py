@@ -11,7 +11,7 @@ def main():
         from django.core.management.commands.runserver import Command as runserver
         from django.core.management import execute_from_command_line
 
-        runserver.default_port = '8002'
+        runserver.default_port = '8003'
     except ImportError as exc:
         raise ImportError(
             "Couldn't import Django. Are you sure it's installed and "

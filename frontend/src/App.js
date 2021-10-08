@@ -12,12 +12,13 @@ import ProjectView from "./components/Projects/ProjectView/ProjectView";
 import Auth from "./components/Authorization/Auth";
 import Cookies from "universal-cookie/lib";
 import ProjectForm from "./components/Projects/ProjectForm/ProjectForm";
+import ToDoForm from "./components/Notes/ToDoForm/ToDoForm";
 
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.url = 'http://127.0.0.1:8002';
+    this.url = 'http://127.0.0.1:8003';
     this.state = {
         users: [],
         projects: [],
@@ -186,15 +187,14 @@ class App extends React.Component {
       const headers = this.getHeaders();
       axios.delete(`${this.url}/api/${entity}/${uuid}/`, {headers: headers})
           .then(response => {
-              const objects = this.state.projects.filter(object => object.uuid !== uuid);
+              const objects = this.state[entity].filter(object => object.uuid !== uuid);
               this.setState({[entity]: objects})
           }).catch(error => console.log(error))
   }
 
-  createProject(name, repoLink, users) {
+  createObject(data, entity) {
       const headers = this.getHeaders();
-      const data = {name: name, repoLink: repoLink, users: users};
-      axios.post(`${this.url}/api/projects/`, data, {headers: headers})
+      axios.post(`${this.url}/api/${entity}/`, data, {headers: headers})
           .then(response => {
               let newProject = response.data;
               let users = this.state.projects
@@ -239,8 +239,12 @@ class App extends React.Component {
                         </Route>
                         <Route exact path='/login' render={() => <Auth getToken={(username, password) => this.getToken(username, password)}/>}/>
                         <Route exact path='/projects/create' render={() =>
-                            <ProjectForm allUsers={this.state.users} createProject={(name, repoLink, users) => this.createProject(name, repoLink, users)}/>}/>
-                        {/*<Route exact path='/notes/create' render*/}
+                            <ProjectForm
+                                allUsers={this.state.users}
+                                createProject={(data, entity) => this.createObject(data, entity)}/>}/>
+                        <Route exact path='/notes/create' render={() =>
+                            <ToDoForm
+                                createNote={(data, entity) => this.createObject(data,entity)} />}/>
                         <Route render={NotFound404}/>
                     </Switch>
                 </BrowserRouter>
