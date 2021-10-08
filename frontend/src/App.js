@@ -91,36 +91,69 @@ class App extends React.Component {
       let isFirstPage;
       let isFirstPageLabel;
 
-      if (entity === 'projects') {
-          currentPage = this.state.projectPage;
-          currentPageLabel = 'projectPage'
+      switch (entity) {
+          case 'projects':
+              currentPage = this.state.projectPage;
+              currentPageLabel = 'projectPage';
 
-          isLastPage = this.state.isLastProjectPage
-          isLastPageLabel = 'isLastProjectPage'
+              isLastPage = this.state.isLastProjectPage;
+              isLastPageLabel = 'isLastProjectPage';
 
-          isFirstPage = this.state.isFirstProjectPage
-          isFirstPageLabel = 'isFirstProjectPage'
+              isFirstPage = this.state.isFirstProjectPage;
+              isFirstPageLabel = 'isFirstProjectPage';
+              break;
+          case 'users':
+              currentPage = this.state.usersPage;
+              currentPageLabel = 'usersPage';
 
-      } else if (entity === 'users') {
-          currentPage = this.state.usersPage;
-          currentPageLabel = 'usersPage'
+              isLastPage = this.state.isLastUsersPage;
+              isLastPageLabel = 'isLastUsersPage';
 
-          isLastPage = this.state.isLastUsersPage
-          isLastPageLabel = 'isLastUsersPage'
+              isFirstPage = this.state.isFirstUsersPage;
+              isFirstPageLabel = 'isFirstUsersPage';
+              break;
+          case 'notes':
+              currentPage = this.state.notesPage;
+              currentPageLabel = 'notesPage';
 
-          isFirstPage = this.state.isFirstUsersPage
-          isFirstPageLabel = 'isFirstUsersPage'
+              isLastPage = this.state.isLastNotesPage;
+              isLastPageLabel = 'isLastNotesPage';
 
-      } else if (entity === 'notes') {
-          currentPage = this.state.notesPage;
-          currentPageLabel = 'notesPage'
-
-          isLastPage = this.state.isLastNotesPage
-          isLastPageLabel = 'isLastNotesPage'
-
-          isFirstPage = this.state.isFirstNotesPage
-          isFirstPageLabel = 'isFirstNotesPage'
+              isFirstPage = this.state.isFirstNotesPage;
+              isFirstPageLabel = 'isFirstNotesPage';
+              break;
       }
+
+      // if (entity === 'projects') {
+      //     currentPage = this.state.projectPage;
+      //     currentPageLabel = 'projectPage'
+      //
+      //     isLastPage = this.state.isLastProjectPage
+      //     isLastPageLabel = 'isLastProjectPage'
+      //
+      //     isFirstPage = this.state.isFirstProjectPage
+      //     isFirstPageLabel = 'isFirstProjectPage'
+      //
+      // } else if (entity === 'users') {
+      //     currentPage = this.state.usersPage;
+      //     currentPageLabel = 'usersPage'
+      //
+      //     isLastPage = this.state.isLastUsersPage
+      //     isLastPageLabel = 'isLastUsersPage'
+      //
+      //     isFirstPage = this.state.isFirstUsersPage
+      //     isFirstPageLabel = 'isFirstUsersPage'
+      //
+      // } else if (entity === 'notes') {
+      //     currentPage = this.state.notesPage;
+      //     currentPageLabel = 'notesPage'
+      //
+      //     isLastPage = this.state.isLastNotesPage
+      //     isLastPageLabel = 'isLastNotesPage'
+      //
+      //     isFirstPage = this.state.isFirstNotesPage
+      //     isFirstPageLabel = 'isFirstNotesPage'
+      // }
 
       if (action === 'next' && !isLastPage) {
           ++currentPage;
@@ -196,9 +229,12 @@ class App extends React.Component {
       const headers = this.getHeaders();
       axios.post(`${this.url}/api/${entity}/`, data, {headers: headers})
           .then(response => {
-              let newProject = response.data;
+              let newObject = response.data;
+              if (entity === 'projects') {
+
+              } else if (entity)
               let users = this.state.projects
-          })
+          }).catch(error => console.log(error))
   }
 
   componentDidMount() {

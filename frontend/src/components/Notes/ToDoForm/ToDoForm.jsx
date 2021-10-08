@@ -8,7 +8,6 @@ class ToDoForm extends React.Component {
             project: '',
             text: '',
             user: '',
-            isActive: ''
         }
     }
 
@@ -23,15 +22,31 @@ class ToDoForm extends React.Component {
             {
                 project: this.state.project,
                 text: this.state.text,
-                user: this.state.user, isActive:
-                this.state.isActive
+                user: this.state.user,
             })
         event.preventDefault();
     }
 
     render() {
         return(
+                <form onSubmit={event => this.handleSubmit(event)}>
+                    <div className={c.formGroup}>
+                        <label htmlFor='project'>Project</label>
+                        <input id='project' type='text' name='project' value={this.state.project} onChange={event => this.handleChange(event)}/>
+                    </div>
 
+                    <div className={c.formGroup}>
+                        <label htmlFor='noteText'>Text</label>
+                        <input id='noteText' type='text' name='text' value={this.state.text} onChange={event => this.handleChange(event)}/>
+                    </div>
+
+                    <div className={c.formGroup}>
+                        <label htmlFor='user'>User</label>
+                        <input id='user' type='text' name='user' value={this.state.user} onChange={event => this.handleChange(event)}/>
+                    </div>
+
+                    <button type='submit'>Save</button>
+                </form>
         )
     }
 }
