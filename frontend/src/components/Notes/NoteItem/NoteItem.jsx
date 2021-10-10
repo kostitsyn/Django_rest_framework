@@ -1,5 +1,4 @@
 const NoteItem = ({note, deleteNote}) => {
-    debugger;
     return (
         <tr>
             <td>{note.project.name.slice(0, 60)}</td>

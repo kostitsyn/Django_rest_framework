@@ -9,6 +9,8 @@ class ToDoForm extends React.Component {
             text: '',
             user: '',
         }
+        this.projectElements = props.allProjects.map(project => <option value={project.uuid} key={project.uuid}>{project.name}</option>)
+        this.userElements = props.allUsers.map(user => <option value={user.uuid} key={user.uuid}>{user.firstname} {user.lastname}</option>)
     }
 
     handleChange(event) {
@@ -23,7 +25,7 @@ class ToDoForm extends React.Component {
                 project: this.state.project,
                 text: this.state.text,
                 user: this.state.user,
-            })
+            }, 'notes')
         event.preventDefault();
     }
 
@@ -32,7 +34,10 @@ class ToDoForm extends React.Component {
                 <form onSubmit={event => this.handleSubmit(event)}>
                     <div className={c.formGroup}>
                         <label htmlFor='project'>Project</label>
-                        <input id='project' type='text' name='project' value={this.state.project} onChange={event => this.handleChange(event)}/>
+                        {/*<input id='project' type='text' name='project' value={this.state.project} onChange={event => this.handleChange(event)}/>*/}
+                        <select id='project' name='project' onChange={event => this.handleChange(event)}>
+                            {this.projectElements}
+                        </select>
                     </div>
 
                     <div className={c.formGroup}>
@@ -42,7 +47,10 @@ class ToDoForm extends React.Component {
 
                     <div className={c.formGroup}>
                         <label htmlFor='user'>User</label>
-                        <input id='user' type='text' name='user' value={this.state.user} onChange={event => this.handleChange(event)}/>
+                        {/*<input id='user' type='text' name='user' value={this.state.user} onChange={event => this.handleChange(event)}/>*/}
+                        <select id='user' name='user' onChange={event => this.handleChange(event)}>
+                            {this.userElements}
+                        </select>
                     </div>
 
                     <button type='submit'>Save</button>

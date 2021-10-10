@@ -39,6 +39,29 @@ class ProjectModelViewSet(ModelViewSet):
             new_project.save()
         return Response(status=status.HTTP_201_CREATED)
 
+    def partial_update(self, request, pk=None):
+        try:
+            update_project = Project.objects.get(pk=pk)
+            users_project = []
+            if request.data['users']:
+                for user in request.data['users']:
+                    current_user = User.objects.get(pk=user['uuid'])
+                    users_project.append(current_user)
+            if update_project.users != users_project:
+                update_project.users.set(users_project)
+                update_project.save()
+            if update_project.name != request.data['name']:
+                update_project.name = request.data['name']
+                update_project.save()
+            if update_project.repo_link != request.data['repo_link']:
+                update_project.repo_link = request.data['repo_link']
+                update_project.save()
+        except Project.DoesNotExist:
+            pass
+        return Response(status=status.HTTP_201_CREATED)
+
+
+
 # class ExamplePagination(PageNumberPagination):
 #     page_size = 2
 #
@@ -152,6 +175,18 @@ class ToDoModelViewSet(ModelViewSet):
         note.save()
         serializer = ToDoSerializer(note)
         return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        try:
+            note_project = Project.objects.get(pk=request.data['project'])
+        except Project.DoesNotExist:
+            note_project = Project.objects.all()[0]
+        try:
+            note_user = User.objects.get(pk=request.data['user'])
+        except User.DoesNotExist:
+            note_user = User.objects.all()[0]
+        ToDo.objects.create(project=note_project, text=request.data['text'], user=note_user)
+        return Response(status=status.HTTP_201_CREATED)
 
     def get_queryset(self):
         return ToDo.objects.filter(is_active=True)

@@ -13,6 +13,7 @@ import Auth from "./components/Authorization/Auth";
 import Cookies from "universal-cookie/lib";
 import ProjectForm from "./components/Projects/ProjectForm/ProjectForm";
 import ToDoForm from "./components/Notes/ToDoForm/ToDoForm";
+import ChangeProjectForm from "./components/Projects/ChangeProjectForm/ChangeProjectForm";
 
 
 class App extends React.Component {
@@ -38,6 +39,7 @@ class App extends React.Component {
         notesPage: 1,
         isLastNotesPage: false,
         isFirstNotesPage: false,
+
     }
   }
 
@@ -122,38 +124,9 @@ class App extends React.Component {
               isFirstPage = this.state.isFirstNotesPage;
               isFirstPageLabel = 'isFirstNotesPage';
               break;
+          default:
+              break;
       }
-
-      // if (entity === 'projects') {
-      //     currentPage = this.state.projectPage;
-      //     currentPageLabel = 'projectPage'
-      //
-      //     isLastPage = this.state.isLastProjectPage
-      //     isLastPageLabel = 'isLastProjectPage'
-      //
-      //     isFirstPage = this.state.isFirstProjectPage
-      //     isFirstPageLabel = 'isFirstProjectPage'
-      //
-      // } else if (entity === 'users') {
-      //     currentPage = this.state.usersPage;
-      //     currentPageLabel = 'usersPage'
-      //
-      //     isLastPage = this.state.isLastUsersPage
-      //     isLastPageLabel = 'isLastUsersPage'
-      //
-      //     isFirstPage = this.state.isFirstUsersPage
-      //     isFirstPageLabel = 'isFirstUsersPage'
-      //
-      // } else if (entity === 'notes') {
-      //     currentPage = this.state.notesPage;
-      //     currentPageLabel = 'notesPage'
-      //
-      //     isLastPage = this.state.isLastNotesPage
-      //     isLastPageLabel = 'isLastNotesPage'
-      //
-      //     isFirstPage = this.state.isFirstNotesPage
-      //     isFirstPageLabel = 'isFirstNotesPage'
-      // }
 
       if (action === 'next' && !isLastPage) {
           ++currentPage;
@@ -230,11 +203,29 @@ class App extends React.Component {
       axios.post(`${this.url}/api/${entity}/`, data, {headers: headers})
           .then(response => {
               let newObject = response.data;
-              if (entity === 'projects') {
+              switch (entity) {
+                  case 'projects':
+                      let users = this.state.users.filter(user => newObject.users.find(uuid => uuid === user.uuid));
+                      newObject.users = users;
+                      break;
+                  case 'notes':
+                      let project = this.state.projects.find(project => project.uuid === newObject.uuid);
+                      newObject.project = project;
+                      let user = this.state.users.find(user => user.uuid === newObject.uuid);
+                      newObject.user = user;
+                      break;
+                  default:
+                      break;
+              }
+          }).catch(error => console.log(error));
+  }
 
-              } else if (entity)
-              let users = this.state.projects
-          }).catch(error => console.log(error))
+  changeObject(data, entity, uuid) {
+      const headers = this.getHeaders();
+      axios.patch(`${this.url}/api/${entity}/${uuid}/`, data, {headers: headers})
+          .then(response => {
+              let updateObject = response.data;
+          }).catch(error => console.log(error));
   }
 
   componentDidMount() {
@@ -270,8 +261,13 @@ class App extends React.Component {
                             currentPage={this.state.notesPage}
                             isLastNotesPage={this.state.isLastNotesPage}
                             isFirstNotesPage={this.state.isFirstNotesPage}/>}/>
-                        <Route path='/project/:id'>
+                        <Route exact path='/project/:id'>
                             <ProjectView projects={this.state.projects}/>
+                        </Route>
+                        <Route exact path='/project/change/:uuid'>
+                            <ChangeProjectForm projects={this.state.projects}
+                                               users={this.state.users}
+                                               changeProject={(data, entity, uuid) => this.changeObject(data, entity, uuid)}/>
                         </Route>
                         <Route exact path='/login' render={() => <Auth getToken={(username, password) => this.getToken(username, password)}/>}/>
                         <Route exact path='/projects/create' render={() =>
@@ -280,7 +276,10 @@ class App extends React.Component {
                                 createProject={(data, entity) => this.createObject(data, entity)}/>}/>
                         <Route exact path='/notes/create' render={() =>
                             <ToDoForm
-                                createNote={(data, entity) => this.createObject(data,entity)} />}/>
+                                allUsers={this.state.users}
+                                createNote={(data, entity) => this.createObject(data,entity)}
+                                allProjects={this.state.projects}/>}/>
+
                         <Route render={NotFound404}/>
                     </Switch>
                 </BrowserRouter>
