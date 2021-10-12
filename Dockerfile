@@ -1,4 +1,4 @@
-from python:3.9.7
+FROM python:3.9.7
 
 RUN apt-get update \
 && apt-get install -y postgresql postgresql-contrib libpq-dev python3-dev
