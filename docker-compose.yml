@@ -41,3 +41,5 @@ services:
       - 80:80
     depends_on:
       - nginx
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
