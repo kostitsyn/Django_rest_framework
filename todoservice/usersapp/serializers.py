@@ -16,7 +16,7 @@ class UserModelSerializer(ModelSerializer):
             'firstname',
             'lastname',
             'email',
-            'uuid',
+            'id',
         ]
 
 

@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
 from usersapp.models import User
-from uuid import uuid4
 from mimesis import Person
 
 
@@ -13,13 +12,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for i in range(options['quantity']):
             user = Person('ru')
-            user = User(uuid=uuid4(),
+            user = User(
                         username=user.username('U_d'),
                         firstname=user.first_name(),
                         lastname=user.last_name(),
                         email=user.email(domains=['yandex.ru', 'mail.ru']))
             try:
                 user.save()
-            except Exception:
+            except Exception as e:
+                print(e)
                 raise CommandError(f'Cannot create user {user.firstname} {user.lastname}')
             self.stdout.write(self.style.SUCCESS(f"Successfully created user {user.firstname} {user.lastname}"))

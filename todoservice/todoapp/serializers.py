@@ -22,7 +22,7 @@ class ToDoSerializerBase(ModelSerializer):
 
     class Meta:
         model = ToDo
-        fields = ['project', 'text', 'user', 'is_active', 'uuid']
+        fields = ['project', 'text', 'user', 'is_active', 'id']
 
 
 class ToDoSerializer(ModelSerializer):
@@ -33,4 +33,4 @@ class ToDoSerializer(ModelSerializer):
 
     class Meta:
         model = ToDo
-        fields = ['project', 'text', 'user', 'is_active', 'uuid']
+        fields = ['project', 'text', 'user', 'is_active', 'id']

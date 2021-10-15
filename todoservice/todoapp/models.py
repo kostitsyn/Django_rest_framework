@@ -1,10 +1,7 @@
 from django.db import models
 from usersapp.models import User
-from uuid import uuid4
-
 
 class Project(models.Model):
-    uuid = models.UUIDField(primary_key=True, default=uuid4)
     name = models.CharField(max_length=128, verbose_name='Название проекта')
     repo_link = models.URLField(max_length=512, verbose_name='Ссылка на репозаторий')
     users = models.ManyToManyField(User)
@@ -19,7 +16,6 @@ class Project(models.Model):
 
 
 class ToDo(models.Model):
-    uuid = models.UUIDField(primary_key=True, default=uuid4)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     text = models.TextField(max_length=1000, verbose_name='Текст заметки')
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
