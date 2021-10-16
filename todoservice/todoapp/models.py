@@ -1,8 +1,9 @@
 from django.db import models
 from usersapp.models import User
 
+
 class Project(models.Model):
-    name = models.CharField(max_length=128, verbose_name='Название проекта')
+    name = models.CharField(max_length=512, verbose_name='Название проекта')
     repo_link = models.URLField(max_length=512, verbose_name='Ссылка на репозаторий')
     users = models.ManyToManyField(User)
 
