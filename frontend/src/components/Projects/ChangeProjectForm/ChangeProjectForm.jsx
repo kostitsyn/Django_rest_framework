@@ -1,15 +1,20 @@
 import React from 'react';
-import c from './ProjectForm.module.css';
+import c from "../ProjectForm/ProjectForm.module.css";
+import {withRouter} from "react-router-dom";
 
-class ProjectForm extends React.Component {
+
+class ChangeProjectForm extends React.Component {
     constructor(props) {
         super(props);
+        this.uuid = this.props.match.params.uuid;
+        this.project = props.projects.find(project => project.uuid === this.uuid);
         this.state = {
-            name: '',
-            repoLink: '',
-            users: [],
+            name: this.project.name,
+            repoLink: this.project.repoLink,
+            users: this.project.users,
         }
-        this.usersElements = this.props.allUsers.map(user => <option value={user.uuid} key={user.uuid}>{user.firstname} {user.lastname}</option>)
+        this.usersElements = this.props.users.map(user => <option value={user.uuid} key={user.uuid}>{user.firstname} {user.lastname}</option>)
+
     }
 
     handleChange(event) {
@@ -17,22 +22,17 @@ class ProjectForm extends React.Component {
             this.setState({[event.target.name]: event.target.value})
         }
         else {
-            let value = Array.from(event.target.selectedOptions, (option) => option.value);
-            this.setState({[event.target.name]: value})
+            this.setState({[event.target.name]: event.target.value.split(',')})
         }
     }
 
     handleSubmit(event) {
-        this.props.createProject({name: this.state.name, repoLink: this.state.repoLink, users: this.state.users}, 'projects')
+        this.props.changeProject({name: this.state.name, repoLink: this.state.repoLink, users: this.state.users}, 'projects', this.uuid)
         event.preventDefault();
     }
 
-    // componentDidMount() {
-    //     this.usersElements = this.props.allUsers.map(user => <option value={user.uuid} key={user.uuid}>{user.firstname} {user.lastname}</option>)
-    // }
-
     render() {
-        return (
+        return(
             <form onSubmit={event => this.handleSubmit(event)}>
                 <div className={c.formGroup}>
                     <label htmlFor='name'>Name</label>
@@ -46,7 +46,6 @@ class ProjectForm extends React.Component {
 
                 <div className={c.formGroup}>
                     <label htmlFor='users'>Users</label>
-                    {/*<input type='text' id='users' name='users' value={this.state.users} onChange={event => this.handleChange(event)}/>*/}
                     <select multiple id='users' name='users' onChange={event => this.handleChange(event)}>
                         {this.usersElements}
                     </select>
@@ -58,4 +57,4 @@ class ProjectForm extends React.Component {
     }
 }
 
-export default ProjectForm;
+export default withRouter(ChangeProjectForm);

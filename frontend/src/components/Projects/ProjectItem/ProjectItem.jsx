@@ -8,6 +8,7 @@ const ProjectItem = ({project, deleteProject}) => {
             <td><a href={project.repoLink}>{project.repoLink}</a></td>
             <td>{UserNames}</td>
             <td><button onClick={() => deleteProject('projects', project.uuid)} type='button'>Delete</button></td>
+            <td><NavLink to={`/project/change/${project.uuid}`}>Change</NavLink></td>
         </tr>
     )
 }
