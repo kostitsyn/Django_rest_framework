@@ -18,7 +18,7 @@ import ToDoForm from "./components/Notes/ToDoForm/ToDoForm";
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.url = 'http://127.0.0.1:8003';
+    this.url = 'http://127.0.0.1:8000';
     this.state = {
         users: [],
         projects: [],
@@ -232,8 +232,9 @@ class App extends React.Component {
               let newObject = response.data;
               if (entity === 'projects') {
 
-              } else if (entity)
+              } else if (entity) {
               let users = this.state.projects
+              }
           }).catch(error => console.log(error))
   }
 

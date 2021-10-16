@@ -30,9 +30,9 @@ class ProjectModelViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         new_project = Project.objects.create(name=request.data['name'], repo_link=request.data['repo_link'])
-        for user_uuid in request.data['users']:
+        for user_id in request.data['users']:
             try:
-                current_user = User.objects.get(uuid=user_uuid)
+                current_user = User.objects.get(pk=user_id)
             except User.DoesNotExist:
                 current_user = None
             new_project.users.add(current_user)
