@@ -26,13 +26,6 @@ services:
       - 8010:8050
     command: bash -c "
       ./wait-for-postgres.sh db
-      && python3 manage.py makemigrations usersapp
-      && python3 manage.py migrate usersapp
-      && python3 manage.py makemigrations todoapp
-      && python3 manage.py migrate todoapp
-      && python3 manage.py create_superuser
-      && python3 manage.py create_users 10
-      && python3 manage.py create_projects 10 20
       && python3 manage.py collectstatic --noinput
       && gunicorn todoservice.wsgi -b 0.0.0.0:8050
       "
