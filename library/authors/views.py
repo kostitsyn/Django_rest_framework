@@ -49,6 +49,7 @@ class BookModelViewSet(ViewSet):
     permission_classes = [permissions.AllowAny]
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
 
+
     def list(self, request):
         books = Book.objects.all()
         serializer = BookSerializer(books, many=True)
@@ -65,8 +66,9 @@ class BookModelViewSet(ViewSet):
             author = Author.objects.get(pk=author_uuid)
             new_book.authors.add(author)
             new_book.save()
+        serializer = BookSerializer(new_book)
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.data)
 
     def destroy(self, request, pk=None):
         book = Book.objects.get(pk=pk)

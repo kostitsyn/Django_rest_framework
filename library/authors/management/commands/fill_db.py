@@ -20,13 +20,14 @@ class Command(BaseCommand):
     def create_authors(self, quantity):
         _author = Person('ru')
         for i in range(quantity):
-            author = Author(first_name=_author.first_name(),
+            author = Author(
+                            first_name=_author.first_name(),
                             last_name=_author.last_name(),
                             birthday_year=random.randint(1700, 1950))
             try:
                 author.save()
-            except Exception:
-                raise CommandError(f'Cannot create author {author.first_name} {author.last_name}')
+            except Exception as e:
+                raise CommandError(f'Cannot create author {author.first_name} {author.last_name}: {e}')
             self.stdout.write(self.style.SUCCESS(f"Successfully created user {author.first_name} {author.last_name}"))
 
     def create_biographies(self, quantity):
@@ -38,9 +39,9 @@ class Command(BaseCommand):
                                   author=author)
             try:
                 biography.save()
-            except Exception:
+            except Exception as e:
                 raise CommandError(f'Cannot create biography of the author '
-                                   f'{biography.author.first_name} {biography.author.last_name}')
+                                   f'{biography.author.first_name} {biography.author.last_name}": {e}')
             self.stdout.write(self.style.SUCCESS(f"Successfully created biography of the author "
                                                  f"{biography.author.first_name} {biography.author.last_name}"))
 
@@ -52,8 +53,8 @@ class Command(BaseCommand):
                 book.save()
                 authors = self.get_random_authors()
                 book.authors.set(authors)
-            except Exception:
-                raise CommandError(f'Cannot create book "{book.name}"')
+            except Exception as e:
+                raise CommandError(f'Cannot create book "{book.name}": {e}')
             self.stdout.write(self.style.SUCCESS(f'Successfully created book {book.name}'))
 
     def create_articles(self, quantity):
@@ -63,8 +64,8 @@ class Command(BaseCommand):
                               author=self.get_random_author())
             try:
                 article.save()
-            except Exception:
-                raise CommandError(f'Cannot create project "{article.name}"')
+            except Exception as e:
+                raise CommandError(f'Cannot create article "{article.name}": {e}')
             self.stdout.write(self.style.SUCCESS(f'Successfully created project {article.name}'))
 
     def get_random_authors(self):

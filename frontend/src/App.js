@@ -72,8 +72,11 @@ class App extends React.Component {
         axios.post(`${this.url}/api/books/`, data, {headers: headers})
             .then(response => {
                 let newBook = response.data;
-                const authors = this.state.authors.filter(author => authors.find(newAuthor => newAuthor === author.uuid));
-                newBook.authors = authors;
+                const books = this.state.books;
+                books.push(newBook);
+                this.setState({
+                    books: books
+                })
             })
             .catch(error => console.log(error));
     }
