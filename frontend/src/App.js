@@ -1,12 +1,11 @@
 import React from "react";
-import c from './App.css';
 import axios from "axios";
 import Users from "./components/Users/Users";
 import NotesList from "./components/Notes/Notes";
 import ProjectsList from "./components/Projects/Projects";
 import Menu from "./components/Menu/Menu";
 import Footer from "./components/Footer/Footer";
-import {BrowserRouter, HashRouter, Route, Switch, Redirect} from "react-router-dom";
+import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
 import NotFound404 from "./components/NotFound404/NotFound404";
 import ProjectView from "./components/Projects/ProjectView/ProjectView";
 import Auth from "./components/Authorization/Auth";
@@ -23,6 +22,7 @@ class App extends React.Component {
     this.state = {
         users: [],
         projects: [],
+        projectsCount: '',
         menuItem: ['Users', 'Projects', 'Notes', 'Login'],
         notes: [],
         token: '',
@@ -69,7 +69,6 @@ class App extends React.Component {
 
   getToken(login, password) {
       axios.post(`${this.url}/api-token-auth/`, {username: login, password: password})
-      // axios.post(`127.0.0.1:8002/api/api-token-auth/`, {username: login, password: password})
           .then(response => {
               this.setToken(response.data['token']);
               this.setUsername(login);
@@ -137,7 +136,7 @@ class App extends React.Component {
       }
       axios.get(`${this.url}/api/${entity}/?page=${currentPage}`, {headers})
         .then(response => {
-          const objects = response.data.results
+          const objects = response.data.results;
           this.setState(
               {
                 [entity]: objects,
@@ -146,7 +145,13 @@ class App extends React.Component {
                 [isFirstPageLabel]: !response.data.previous,
               }
           )
-        }).catch(error => console.log(error))
+        }).catch(error => {
+            this.setState(
+              {
+                [currentPageLabel]: 1,
+              }
+          )
+      })
   }
 
   loadData() {
@@ -166,6 +171,7 @@ class App extends React.Component {
           this.setState(
               {
                 projects: projects,
+                projectsCount: response.data.count
               }
           )
         }).catch(error => console.log(error))
@@ -189,11 +195,11 @@ class App extends React.Component {
       return this.state.token != '';
   }
 
-  deleteObject(entity, uuid) {
+  deleteObject(entity, id) {
       const headers = this.getHeaders();
-      axios.delete(`${this.url}/api/${entity}/${uuid}/`, {headers: headers})
+      axios.delete(`${this.url}/api/${entity}/${id}/`, {headers: headers})
           .then(response => {
-              const objects = this.state[entity].filter(object => object.uuid !== uuid);
+              const objects = this.state[entity].filter(object => object.id != id);
               this.setState({[entity]: objects})
           }).catch(error => console.log(error))
   }
@@ -205,28 +211,35 @@ class App extends React.Component {
               let newObject = response.data;
               switch (entity) {
                   case 'projects':
-                      let users = this.state.users.filter(user => newObject.users.find(uuid => uuid === user.uuid));
-                      newObject.users = users;
                       break;
                   case 'notes':
-                      let project = this.state.projects.find(project => project.uuid === newObject.uuid);
+                      let project = this.state.projects.find(project => String(project.id) === String(newObject.project));
                       newObject.project = project;
-                      let user = this.state.users.find(user => user.uuid === newObject.uuid);
+                      let user = this.state.users.find(user => String(user.id) === String(newObject.user));
                       newObject.user = user;
                       break;
                   default:
                       break;
               }
+              this.setState({
+                  [entity]: [...this.state[entity], newObject]
+              })
           }).catch(error => console.log(error));
   }
 
-  changeObject(data, entity, uuid) {
+  changeObject(data, entity, id) {
       const headers = this.getHeaders();
-      axios.patch(`${this.url}/api/${entity}/${uuid}/`, data, {headers: headers})
+      axios.patch(`${this.url}/api/${entity}/${id}/`, data, {headers: headers})
           .then(response => {
               let updateObject = response.data;
+              let allObjects = this.state[entity].filter(o => o.id != id);
+              allObjects.push(updateObject);
+              this.setState({
+                  [entity]: allObjects
+              })
           }).catch(error => console.log(error));
   }
+
 
   componentDidMount() {
       this.getCookieFromStorage();
@@ -241,33 +254,32 @@ class App extends React.Component {
                           logout={this.logout.bind(this)} username={this.state.username}/>
                     <Switch>
                         <Route exact path='/' render={() => <Users
-                            users={this.state.users}
-                            changePage={(entity, action) => {this.changePage(entity, action)}}
-                            currentPage={this.state.usersPage}
-                            isLastUsersPage={this.state.isLastUsersPage}
-                            isFirstUsersPage={this.state.isFirstUsersPage}/>}/>
+                            state={this.state}
+                            changePage={(entity, action) => {this.changePage(entity, action)}}/>}/>
                         <Redirect from='/users' to='/'/>
                         <Route exact path='/projects' render={() => <ProjectsList
-                            deleteProject={(entity, uuid) => this.deleteObject(entity, uuid)}
+                            deleteProject={(entity, id) => this.deleteObject(entity, id)}
+                            users={this.state.users}
                             projects={this.state.projects}
+                            projectsCount={this.state.projectsCount}
                             changePage={(entity, action) => {this.changePage(entity, action)}}
                             currentPage={this.state.projectPage}
                             isLastProjectPage={this.state.isLastProjectPage}
                             isFirstProjectPage={this.state.isFirstProjectPage}/>}/>
                         <Route exact path='/notes' render={() => <NotesList
-                            deleteNote={(entity, uuid) => {this.deleteObject(entity, uuid)}}
+                            deleteNote={(entity, id) => {this.deleteObject(entity, id)}}
                             notes={this.state.notes}
                             changePage={(entity, action) => {this.changePage(entity, action)}}
                             currentPage={this.state.notesPage}
                             isLastNotesPage={this.state.isLastNotesPage}
                             isFirstNotesPage={this.state.isFirstNotesPage}/>}/>
                         <Route exact path='/project/:id'>
-                            <ProjectView projects={this.state.projects}/>
+                            <ProjectView projects={this.state.projects} users={this.state.users}/>
                         </Route>
-                        <Route exact path='/project/change/:uuid'>
+                        <Route exact path='/project/change/:id'>
                             <ChangeProjectForm projects={this.state.projects}
                                                users={this.state.users}
-                                               changeProject={(data, entity, uuid) => this.changeObject(data, entity, uuid)}/>
+                                               changeProject={(data, entity, id) => this.changeObject(data, entity, id)}/>
                         </Route>
                         <Route exact path='/login' render={() => <Auth getToken={(username, password) => this.getToken(username, password)}/>}/>
                         <Route exact path='/projects/create' render={() =>
@@ -276,9 +288,10 @@ class App extends React.Component {
                                 createProject={(data, entity) => this.createObject(data, entity)}/>}/>
                         <Route exact path='/notes/create' render={() =>
                             <ToDoForm
-                                allProjects={this.state.projects}
                                 allUsers={this.state.users}
-                                createNote={(data, entity) => this.createObject(data,entity)} />}/>
+                                createNote={(data, entity) => this.createObject(data,entity)}
+                                allProjects={this.state.projects}/>}/>
+
                         <Route render={NotFound404}/>
                     </Switch>
                 </BrowserRouter>

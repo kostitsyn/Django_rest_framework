@@ -2,7 +2,7 @@ import UserItem from "./UserItem/UserItem";
 import c from './Users.module.css';
 
 const Users = (props) => {
-    let usersElements = props.users.map(user => <UserItem user={user} key={user.uuid}/>)
+    let usersElements = props.state.users.map(user => <UserItem user={user} key={user.id}/>)
 
 
     return(
@@ -23,9 +23,9 @@ const Users = (props) => {
                     {usersElements}
                 </thead>
             </table>
-            {props.isFirstUsersPage ? null : <button onClick={() => props.changePage('users', 'previous')}>Previous page</button>}
-            {props.isLastUsersPage ? null : <button onClick={() => props.changePage('users', 'next')}>Next page</button>}
-            <div>Текущая страница: {props.currentPage}</div>
+            {props.state.isFirstUsersPage ? null : <button onClick={() => props.changePage('users', 'previous')}>Previous page</button>}
+            {props.state.isLastUsersPage ? null : <button onClick={() => props.changePage('users', 'next')}>Next page</button>}
+            <div>Текущая страница: {props.state.usersPage}</div>
         </div>
     )
 }

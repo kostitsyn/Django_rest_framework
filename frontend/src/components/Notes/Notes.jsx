@@ -3,7 +3,7 @@ import c from './Notes.module.css';
 import {Link} from "react-router-dom";
 
 const NotesList = (props) => {
-    let NoteElements = props.notes.map(note => <NoteItem note={note} deleteNote={props.deleteNote} key={note.uuid}/>)
+    let NoteElements = props.notes.map(note => <NoteItem note={note} deleteNote={props.deleteNote} key={note.id}/>)
 
     return (
         <div>

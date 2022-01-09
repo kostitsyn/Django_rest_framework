@@ -5,12 +5,12 @@ class ToDoForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            project: this.props.allProjects[0].name,
+            project: props.allProjects[0].id,
             text: '',
-            user: this.props.allUsers[0].firstname,
+            user: props.allUsers[0].id,
         }
-        this.projectsElements = this.props.allProjects.map(project => <option value={project.uuid} key={project.uuid}>{project.name}</option>)
-        this.usersElements = this.props.allUsers.map(user => <option value={user.uuid} key={user.uuid}>{user.firstname} {user.lastname}</option>)
+        this.projectElements = props.allProjects.map(project => <option value={project.id} key={project.id}>{project.name}</option>)
+        this.userElements = props.allUsers.map(user => <option value={user.id} key={user.id}>{user.firstname} {user.lastname}</option>)
     }
 
     handleChange(event) {
@@ -34,11 +34,8 @@ class ToDoForm extends React.Component {
                 <form onSubmit={event => this.handleSubmit(event)}>
                     <div className={c.formGroup}>
                         <label htmlFor='project'>Project</label>
-                        {/*<input id='project' type='text' name='project' value={this.state.project} onChange={event => this.handleChange(event)}/>*/}
                         <select id='project' name='project' onChange={event => this.handleChange(event)}>
-
-                            {this.projectsElements}
-
+                            {this.projectElements}
                         </select>
                     </div>
 
@@ -49,9 +46,8 @@ class ToDoForm extends React.Component {
 
                     <div className={c.formGroup}>
                         <label htmlFor='user'>User</label>
-                        {/*<input id='user' type='text' name='user' value={this.state.user} onChange={event => this.handleChange(event)}/>*/}
                         <select id='user' name='user' onChange={event => this.handleChange(event)}>
-                            {this.usersElements}
+                            {this.userElements}
                         </select>
                     </div>
 

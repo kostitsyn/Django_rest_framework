@@ -9,7 +9,7 @@ class ProjectForm extends React.Component {
             repoLink: '',
             users: [],
         }
-        this.usersElements = this.props.allUsers.map(user => <option value={user.uuid} key={user.uuid}>{user.firstname} {user.lastname}</option>)
+        this.usersElements = this.props.allUsers.map(user => <option value={user.id} key={user.id}>{user.firstname} {user.lastname}</option>)
     }
 
     handleChange(event) {
@@ -17,8 +17,15 @@ class ProjectForm extends React.Component {
             this.setState({[event.target.name]: event.target.value})
         }
         else {
-            let value = Array.from(event.target.selectedOptions, (option) => option.value);
-            this.setState({[event.target.name]: value})
+            let users = [...this.state.users];
+            if (this.state.users.includes(Number(event.target.value))) {
+                users = users.filter(u => u !== Number(event.target.value));
+            }else {
+                users = [...users, Number(event.target.value)];
+            };
+            this.setState({
+                    [event.target.name]: users
+            })
         }
     }
 
@@ -26,10 +33,6 @@ class ProjectForm extends React.Component {
         this.props.createProject({name: this.state.name, repoLink: this.state.repoLink, users: this.state.users}, 'projects')
         event.preventDefault();
     }
-
-    // componentDidMount() {
-    //     this.usersElements = this.props.allUsers.map(user => <option value={user.uuid} key={user.uuid}>{user.firstname} {user.lastname}</option>)
-    // }
 
     render() {
         return (
@@ -46,8 +49,7 @@ class ProjectForm extends React.Component {
 
                 <div className={c.formGroup}>
                     <label htmlFor='users'>Users</label>
-                    {/*<input type='text' id='users' name='users' value={this.state.users} onChange={event => this.handleChange(event)}/>*/}
-                    <select multiple id='users' name='users' onChange={event => this.handleChange(event)}>
+                    <select multiple={true} value={this.state.users} id='users' name='users' onChange={event => this.handleChange(event)}>
                         {this.usersElements}
                     </select>
                 </div>

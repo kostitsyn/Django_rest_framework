@@ -1,10 +1,13 @@
 import c from './ProjectView.module.css';
 import {useParams} from 'react-router-dom';
 
-const ProjectView = ({projects}) => {
+const ProjectView = ({projects, users}) => {
     let { id } = useParams();
-    let currentProject = projects.find(project => project.uuid == id);
-    let UserNames = currentProject.users.map(item => `${item.firstname} ${item.lastname}`).join('---')
+    let currentProject = projects.find(project => String(project.id) == String(id));
+    let usersid = [];
+    currentProject.users.forEach(u => usersid.push(u));
+    let currentUsers = users.filter(u => usersid.includes(u.id));
+    let UserNames = currentUsers.map(item => `${item.firstname} ${item.lastname}`).join('---')
 
     return (
         <div className={c.projectData}>

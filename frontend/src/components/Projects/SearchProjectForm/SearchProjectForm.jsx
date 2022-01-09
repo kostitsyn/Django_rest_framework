@@ -4,7 +4,7 @@ class SearchProjectForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            foundProjects: this.props.projects,
+            foundProjects: this.props.projectsCount,
             searchStr: '',
         }
     }
@@ -36,7 +36,7 @@ class SearchProjectForm extends React.Component {
                 <label htmlFor='searchField'>Search by name...</label>
                 <input id='searchField' name='searchStr' value={this.state.searchStr} onChange={event => this.handleChange(event)}/>
                 <button type='submit'>Search</button>
-                <span>Найдено {this.state.foundProjects.length} записей</span>
+                <span>Найдено {this.state.foundProjects} записей</span>
             </form>
         )
     }
