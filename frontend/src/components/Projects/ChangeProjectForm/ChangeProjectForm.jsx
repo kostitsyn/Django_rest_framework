@@ -7,7 +7,7 @@ class ChangeProjectForm extends React.Component {
     constructor(props) {
         super(props);
         this.uuid = this.props.match.params.uuid;
-        this.project = props.projects.find(project => project.uuid === this.uuid);
+        this.project = props.projects.find(project => String(project.uuid) === String(this.uuid));
         this.state = {
             name: this.project.name,
             repoLink: this.project.repoLink,

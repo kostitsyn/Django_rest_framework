@@ -3,7 +3,7 @@ import {useParams} from 'react-router-dom';
 
 const ProjectView = ({projects, users}) => {
     let { id } = useParams();
-    let currentProject = projects.find(project => project.uuid == id);
+    let currentProject = projects.find(project => String(project.uuid) === String(id));
     let usersUuid = [];
     currentProject.users.forEach(u => usersUuid.push(u));
     let currentUsers = users.filter(u => usersUuid.includes(u.uuid));

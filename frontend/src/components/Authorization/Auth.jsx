@@ -15,12 +15,10 @@ class Auth extends React.Component {
                 [event.target.name]: event.target.value
             },
         )
-        // console.log(this.state.login, this.state.password);
     }
 
     handleSubmit(event) {
         this.props.getToken(this.state.login, this.state.password);
-        // console.log(this.state.login, this.state.password);
         event.preventDefault();
     }
 

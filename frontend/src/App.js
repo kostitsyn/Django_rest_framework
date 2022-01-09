@@ -199,7 +199,7 @@ class App extends React.Component {
       const headers = this.getHeaders();
       axios.delete(`${this.url}/api/${entity}/${uuid}/`, {headers: headers})
           .then(response => {
-              const objects = this.state[entity].filter(object => object.uuid !== uuid);
+              const objects = this.state[entity].filter(object => String(object.uuid) !== String(uuid));
               this.setState({[entity]: objects})
           }).catch(error => console.log(error))
   }
@@ -213,9 +213,9 @@ class App extends React.Component {
                   case 'projects':
                       break;
                   case 'notes':
-                      let project = this.state.projects.find(project => project.uuid === newObject.project);
+                      let project = this.state.projects.find(project => String(project.uuid) === String(newObject.project));
                       newObject.project = project;
-                      let user = this.state.users.find(user => user.uuid === newObject.user);
+                      let user = this.state.users.find(user => String(user.uuid) === String(newObject.user));
                       newObject.user = user;
                       break;
                   default:
@@ -232,7 +232,7 @@ class App extends React.Component {
       axios.patch(`${this.url}/api/${entity}/${uuid}/`, data, {headers: headers})
           .then(response => {
               let updateObject = response.data;
-              let allObjects = this.state[entity].filter(o => o.uuid !== uuid);
+              let allObjects = this.state[entity].filter(o => String(o.uuid) !== String(uuid));
               allObjects.push(updateObject);
               this.setState({
                   [entity]: allObjects
