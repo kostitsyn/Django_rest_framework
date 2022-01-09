@@ -9,9 +9,6 @@ class ProjectSerializerBase(ModelSerializer):
         model = Project
         fields = '__all__'
 
-    def update(self, instance, validated_data):
-        print()
-
 
 class ProjectSerializer(ModelSerializer):
     # users = UserModelSerializer(many=True)
@@ -19,9 +16,6 @@ class ProjectSerializer(ModelSerializer):
     class Meta:
         model = Project
         fields = '__all__'
-
-    def save(self, **kwargs):
-        print()
 
 
 class ToDoSerializerBase(ModelSerializer):
