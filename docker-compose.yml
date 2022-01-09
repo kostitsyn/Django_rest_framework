@@ -14,8 +14,8 @@ services:
   adminer:
     image: adminer:4.7.8-standalone
     restart: always
-    expose:
-      - 8080
+    ports:
+      - 8090:8080
     depends_on:
       
       - db
