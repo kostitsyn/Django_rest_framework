@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, HyperlinkedRelatedField
+from rest_framework.serializers import ModelSerializer, HyperlinkedRelatedField, StringRelatedField
 from .models import Project, ToDo
 from usersapp.serializers import UserModelSerializer
 
@@ -14,11 +14,14 @@ class ProjectSerializerBase(ModelSerializer):
 
 
 class ProjectSerializer(ModelSerializer):
-    users = UserModelSerializer(many=True)
+    # users = UserModelSerializer(many=True)
 
     class Meta:
         model = Project
         fields = '__all__'
+
+    def save(self, **kwargs):
+        print()
 
 
 class ToDoSerializerBase(ModelSerializer):

@@ -19,10 +19,20 @@ class ChangeProjectForm extends React.Component {
 
     handleChange(event) {
         if (['name', 'repoLink'].includes(event.target.name)) {
-            this.setState({[event.target.name]: event.target.value})
+            this.setState({
+                [event.target.name]: event.target.value
+            })
         }
         else {
-            this.setState({[event.target.name]: event.target.value.split(',')})
+            let users = [...this.state.users];
+            if (this.state.users.includes(event.target.value)) {
+                users = users.filter(u => u !== event.target.value);
+            }else {
+                users = [...users, event.target.value];
+            };
+            this.setState({
+                    [event.target.name]: users
+            })
         }
     }
 
@@ -46,7 +56,7 @@ class ChangeProjectForm extends React.Component {
 
                 <div className={c.formGroup}>
                     <label htmlFor='users'>Users</label>
-                    <select multiple id='users' name='users' onChange={event => this.handleChange(event)}>
+                    <select multiple={true} value={this.state.users} id='users' name='users' onChange={event => this.handleChange(event)}>
                         {this.usersElements}
                     </select>
                 </div>

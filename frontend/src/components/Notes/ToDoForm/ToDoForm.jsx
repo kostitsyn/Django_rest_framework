@@ -5,9 +5,9 @@ class ToDoForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            project: '',
+            project: props.allProjects[0].uuid,
             text: '',
-            user: '',
+            user: props.allUsers[0].uuid,
         }
         this.projectElements = props.allProjects.map(project => <option value={project.uuid} key={project.uuid}>{project.name}</option>)
         this.userElements = props.allUsers.map(user => <option value={user.uuid} key={user.uuid}>{user.firstname} {user.lastname}</option>)
