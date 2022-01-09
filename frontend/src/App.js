@@ -62,7 +62,10 @@ class App extends React.Component {
     deleteBook(uuid) {
         const headers = this.getHeaders();
         axios.delete(`${this.url}/api/books/${uuid}/`, {headers: headers})
-            .then(response => {this.setState({books: this.state.books.filter(book => book.uuid !== uuid)})})
+            .then(response => {
+            this.setState({
+                books: this.state.books.filter(book => book.uuid !== uuid)})
+            })
             .catch(error => console.log(error))
     }
 
@@ -71,11 +74,8 @@ class App extends React.Component {
         const data = {name: name, authors: authors}
         axios.post(`${this.url}/api/books/`, data, {headers: headers})
             .then(response => {
-                let newBook = response.data;
-                const books = this.state.books;
-                books.push(newBook);
                 this.setState({
-                    books: books
+                    books: [...this.state.books, response.data]
                 })
             })
             .catch(error => console.log(error));
