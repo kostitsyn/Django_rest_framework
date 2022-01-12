@@ -46,7 +46,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - 80:80
+      - 90:80
     depends_on:
       - nginx
 
