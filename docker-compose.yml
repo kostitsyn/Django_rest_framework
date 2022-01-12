@@ -38,7 +38,7 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - 8000:80
+      - 8001:80
     volumes:
       - /static:/static
     depends_on:
@@ -47,7 +47,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - 90:80
+      - 91:80
     depends_on:
       - nginx
 
