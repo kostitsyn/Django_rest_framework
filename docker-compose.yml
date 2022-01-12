@@ -27,8 +27,6 @@ services:
       - 8010:8050
     command: bash -c "
       ./wait-for-postgres.sh db
-      && python3 manage.py create_users 20
-      && python3 manage.py create_projects 20 40
       && python3 manage.py collectstatic --noinput
       && gunicorn todoservice.wsgi -b 0.0.0.0:8050
       "
