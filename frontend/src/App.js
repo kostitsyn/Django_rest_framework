@@ -18,7 +18,7 @@ import ChangeProjectForm from "./components/Projects/ChangeProjectForm/ChangePro
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.url = 'http://185.20.227.181:8001';
+    this.url = 'http://185.20.227.181:8000/';
     this.state = {
         users: [],
         projects: [],
@@ -68,7 +68,7 @@ class App extends React.Component {
   }
 
   getToken(login, password) {
-      axios.post(`${this.url}/api-token-auth/`, {username: login, password: password})
+      axios.post(`${this.url}api-token-auth/`, {username: login, password: password})
           .then(response => {
               this.setToken(response.data['token']);
               this.setUsername(login);
@@ -134,7 +134,7 @@ class App extends React.Component {
       } else {
           return
       }
-      axios.get(`${this.url}/api/${entity}/?page=${currentPage}`, {headers})
+      axios.get(`${this.url}api/${entity}/?page=${currentPage}`, {headers})
         .then(response => {
           const objects = response.data.results;
           this.setState(
@@ -156,7 +156,7 @@ class App extends React.Component {
 
   loadData() {
       const headers = this.getHeaders();
-      axios.get(`${this.url}/api/0.2/users/?page=1`, {headers})
+      axios.get(`${this.url}api/0.2/users/?page=1`, {headers})
         .then(response => {
           const users = response.data.results
           this.setState(
@@ -165,7 +165,7 @@ class App extends React.Component {
               }
           )
         }).catch(error => console.log(error))
-    axios.get(`${this.url}/api/projects/`, {headers})
+    axios.get(`${this.url}api/projects/`, {headers})
         .then(response => {
           const projects = response.data.results
           this.setState(
@@ -175,7 +175,7 @@ class App extends React.Component {
               }
           )
         }).catch(error => console.log(error))
-    axios.get(`${this.url}/api/notes/`, {headers})
+    axios.get(`${this.url}api/notes/`, {headers})
         .then(response => {
           const notes = response.data.results
           this.setState(
@@ -189,6 +189,9 @@ class App extends React.Component {
   logout() {
       this.setToken('');
       this.setState({'username': ''});
+      this.setState({
+        notes: []
+      })
   }
 
   isAuthenticated() {
@@ -197,7 +200,7 @@ class App extends React.Component {
 
   deleteObject(entity, id) {
       const headers = this.getHeaders();
-      axios.delete(`${this.url}/api/${entity}/${id}/`, {headers: headers})
+      axios.delete(`${this.url}api/${entity}/${id}/`, {headers: headers})
           .then(response => {
               const objects = this.state[entity].filter(object => object.id != id);
               this.setState({[entity]: objects})
@@ -206,7 +209,7 @@ class App extends React.Component {
 
   createObject(data, entity) {
       const headers = this.getHeaders();
-      axios.post(`${this.url}/api/${entity}/`, data, {headers: headers})
+      axios.post(`${this.url}api/${entity}/`, data, {headers: headers})
           .then(response => {
               let newObject = response.data;
               switch (entity) {
@@ -229,7 +232,7 @@ class App extends React.Component {
 
   changeObject(data, entity, id) {
       const headers = this.getHeaders();
-      axios.patch(`${this.url}/api/${entity}/${id}/`, data, {headers: headers})
+      axios.patch(`${this.url}api/${entity}/${id}/`, data, {headers: headers})
           .then(response => {
               let updateObject = response.data;
               let allObjects = this.state[entity].filter(o => o.id != id);

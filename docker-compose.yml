@@ -24,11 +24,10 @@ services:
     build:
       context: .
     ports:
-      - 8010:8050
+      - 8080:8080
     command: bash -c "
       ./wait-for-postgres.sh db
-      && python3 manage.py collectstatic --noinput
-      && gunicorn todoservice.wsgi -b 0.0.0.0:8050
+      && gunicorn todoservice.wsgi -b 0.0.0.0:8080
       "
     volumes:
       - /static:/static
@@ -38,7 +37,7 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - 8001:80
+      - 8000:80
     volumes:
       - /static:/static
     depends_on:
@@ -47,7 +46,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - 91:80
+      - 80:80
     depends_on:
       - nginx
 
