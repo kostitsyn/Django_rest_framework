@@ -246,6 +246,7 @@ class App extends React.Component {
 
 
   componentDidMount() {
+      this.logout();
       this.getCookieFromStorage();
   }
 
